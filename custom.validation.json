@@ -1,0 +1,7 @@
+{
+    "customValidation": {
+        "email":{
+            "regexp": /^\S+@(\S+\.\S+)$/i
+        }
+    }
+}
