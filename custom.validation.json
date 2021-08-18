@@ -1,7 +1,7 @@
 {
     "customValidation": {
         "email":{
-            "regexp": /^\S+@(\S+\.\S+)$/i
+            "regex": ["^\\S+@(\\S+\\.\\S+|localhost)$", "i"]
         }
     }
 }
