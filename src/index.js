@@ -1,3 +1,11 @@
+/**
+ * @file JSON Schema Validation - Documentation Language: Brazilian Portuguese
+ * @author Daian Gouveia Morato <daiangm@gmail.com>
+ * @author Caroline Camelo <caroline.camelo@gmail.com>
+ * @copyright Daian Gouveia Morato 2021
+ * @tutorial https://github.com/daiangm/json-validator-BR 
+ */
+
 const customValidation = require('../custom.validation');
 
 "use strict";
@@ -5,16 +13,17 @@ const customValidation = require('../custom.validation');
     module.exports = validateData;
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
- * @example validateData([{name: "campo1", dataType: "string", minLength: 4, maxLength: 11, custom: "NomeValidaçãoInterna"}], {"campo1": "ValorCampo1", "campo2": "ValorCampo2"...})
+ * @example validateData()
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
- * @param {Object[]} rules Array de Objetos contendo os parâmetros de validação dos dados enviados no argumento data
+ * @param {Object[]} rules Array de Objetos contendo os parâmetros de validação dos dados enviados no argumento 'data'
  * @param {string} rules[].name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
  * @param { "string" | "number" | "object" | "array" =} rules[].dataType Tipo de dado esperado do valor do campo definido na propriedade 'name'
- * @param {[string]=} rules[].list Utilize esta propriedade para definir uma lista de valores para validação do campo definido na propriedade 'name'
+ * @param {[string | number]=} rules[].list Utilize esta propriedade para definir uma lista de valores para validação do campo definido na propriedade 'name'
  * @param {number=} rules[].minLength Quantidade mínima de caracteres/itens do valor do campo definido na propriedade 'name'
  * @param {number=} rules[].maxLength Quantidade máxima de caracteres/itens do valor do campo definido na propriedade 'name'
  * @param {{min: number, max: number}=} rules[].range Utilize as propriedades "min" e "max" para definir o intervalo (Validação ocorre apenas para valores como números e datas)
  * @param {boolean=} rules[].required Define se o campo possui preenchimento obrigatório
+ * @param {RegExp=} rules[].regex Expressão regular para validação do valor do campo definido na propriedade 'name'
  * @param {string=} rules[].custom Validação de valores personalizado conforme arquivo custom.validation.js
  * @param {object} rules[].message Propriedade para personalizar a mensagem de erro para cada tipo de validação. Na string, utilize {field} para aparecer o nome do campo, {value} para aparecer o valor invalidado
  * @param {string=} rules[].message.dataType Propriedade para personalizar a mensagem de erro relacionada à validação de tipo de dados. Na string, utilize {dataType} para aparecer na mensagem o tipo de dados configurado para esta validação
@@ -22,6 +31,7 @@ const customValidation = require('../custom.validation');
  * @param {string=} rules[].message.minLength Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade mínima de caracteres / itens. Na string, utilize {minLength} para aparecer na mensagem o valor configurado para esta validação
  * @param {string=} rules[].message.maxLength Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade máxima de caracteres / itens. Na string, utilize {maxLength} para aparecer na mensagem o valor configurado para esta validação
  * @param {string=} rules[].message.range Propriedade para personalizar a mensagem de erro relacionada à validação de intervalo permitido. Na string, utilize {range[min]} para aparecer na mensagem o valor mínimo e {range[max]} para aparecer o valor máximo configurado para esta validação
+ * @param {string=} rules[].message.regex Propriedade para personalizar a mensagem de erro relacionada à validação através de uma expressão regular.
  * @param {string=} rules[].message.required
  * @param {["field1", "field2" ... string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
@@ -75,7 +85,7 @@ function validateData(data, rules, allowedFields) {
                 return {validate: false};
             }
             else{
-                rules[rulesIndex] = customValidation[rules[rulesIndex].custom];
+                rules[rulesIndex] = Object.assign(customValidation[rules[rulesIndex].custom], rules[rulesIndex]);
             }
         }
 
@@ -169,14 +179,17 @@ function validateData(data, rules, allowedFields) {
             }
 
             if(!validated){
+
                 if (typeof rules[rulesIndex].message === "object") {
                     if (typeof rules[rulesIndex].message[r] === "string") {
                         msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
                     }
-                    else if(typeof rf.message.custom === "string"){
-                        msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
+                    else if(typeof rules[rulesIndex].message.custom === "string"){
+                        console.log("Blz")
+                        msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message.custom});
                     }
                 }
+
                 return {validate: false, message: msg}
             }
 

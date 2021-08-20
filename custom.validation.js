@@ -1,13 +1,16 @@
 
 /* 
     Propriedades aceitáveis:
+    {   
         dataType: string,
-        list: [],
+        list: [...string],
         minLength: number,
         maxLength: number,
         range: {min: number, max: number},
         regex: Regex,
-        required: boolean
+        required: boolean,
+        message:{custom: string}
+    }
 */
 
 const customValidation = {
