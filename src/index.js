@@ -1,10 +1,8 @@
-const fs = require("fs");
-const path = require("path");
 const customValidation = require('../custom.validation');
 
 "use strict";
 
-    module.exports = validateData
+    module.exports = validateData;
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
  * @example validateData([{name: "campo1", dataType: "string", minLength: 4, maxLength: 11, custom: "NomeValidaçãoInterna"}], {"campo1": "ValorCampo1", "campo2": "ValorCampo2"...})
@@ -72,15 +70,14 @@ function validateData(data, rules, allowedFields) {
 
         if (rules[rulesIndex].custom !== undefined && rules[rulesIndex].custom !== null && rules[rulesIndex].custom !== "") {
 
-            if(typeof customValidation[rules[rulesIndex].customValidation] !== "object"){
-                console.error(`Não há validação customizada com o nome ${rules[rulesIndex].customValidation}`);
+            if(typeof customValidation[rules[rulesIndex].custom] !== "object"){
+                console.error(`Não há validação personalizada com o nome '${rules[rulesIndex].custom}'`);
                 return {validate: false};
             }
             else{
-                rules[rulesIndex] = customValidation[rules[rulesIndex].customValidation];
+                rules[rulesIndex] = customValidation[rules[rulesIndex].custom];
             }
         }
-
 
         for (r in rules[rulesIndex]) {
             switch (r.toUpperCase()) {
@@ -162,7 +159,6 @@ function validateData(data, rules, allowedFields) {
                 break;
 
                 case "REGEX":
-                    console.log(data[key])
                     let matches = data[key].match(rules[rulesIndex][r]);
                     
                     if(!matches){
@@ -175,6 +171,9 @@ function validateData(data, rules, allowedFields) {
             if(!validated){
                 if (typeof rules[rulesIndex].message === "object") {
                     if (typeof rules[rulesIndex].message[r] === "string") {
+                        msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
+                    }
+                    else if(typeof rf.message.custom === "string"){
                         msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
                     }
                 }
@@ -196,7 +195,10 @@ function validateData(data, rules, allowedFields) {
 
                 if(typeof rf.message === "object"){
                     if(typeof rf.message.required === "string"){
-                        msg = setErrorMessage({field: rf.name, message: rf.message.required})
+                        msg = setErrorMessage({field: rf.name, message: rf.message.required});
+                    }
+                    else if(typeof rf.message.custom === "string"){
+                        msg = setErrorMessage({field: rf.name, message: rf.message.custom});
                     }
                 }
 
