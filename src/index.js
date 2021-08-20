@@ -1,7 +1,7 @@
 /**
  * @file JSON Schema Validation - Documentation Language: Brazilian Portuguese
  * @author Daian Gouveia Morato <daiangm@gmail.com>
- * @author Caroline Camelo <caroline.camelo@gmail.com>
+ * @author Caroline Camelo <>
  * @copyright Daian Gouveia Morato 2021
  * @tutorial https://github.com/daiangm/json-validator-BR 
  */
