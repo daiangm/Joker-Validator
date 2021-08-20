@@ -1,12 +1,13 @@
 const fs = require("fs");
 const path = require("path");
+const customValidation = require('../custom.validation');
 
 "use strict";
 
     module.exports = validateData
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
- * @example validateData([{name: "campo1", dataType: "string", minLength: 4, maxLength: 11, customValidation: "NomeValidaçãoInterna"}], {"campo1": "ValorCampo1", "campo2": "ValorCampo2"...})
+ * @example validateData([{name: "campo1", dataType: "string", minLength: 4, maxLength: 11, custom: "NomeValidaçãoInterna"}], {"campo1": "ValorCampo1", "campo2": "ValorCampo2"...})
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
  * @param {Object[]} rules Array de Objetos contendo os parâmetros de validação dos dados enviados no argumento data
  * @param {string} rules[].name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
@@ -16,7 +17,7 @@ const path = require("path");
  * @param {number=} rules[].maxLength Quantidade máxima de caracteres/itens do valor do campo definido na propriedade 'name'
  * @param {{min: number, max: number}=} rules[].range Utilize as propriedades "min" e "max" para definir o intervalo (Validação ocorre apenas para valores como números e datas)
  * @param {boolean=} rules[].required Define se o campo possui preenchimento obrigatório
- * @param {boolean=} rules[].customValidation Validação de valores personalizado conforme arquivo custom.json
+ * @param {string=} rules[].custom Validação de valores personalizado conforme arquivo custom.validation.js
  * @param {object} rules[].message Propriedade para personalizar a mensagem de erro para cada tipo de validação. Na string, utilize {field} para aparecer o nome do campo, {value} para aparecer o valor invalidado
  * @param {string=} rules[].message.dataType Propriedade para personalizar a mensagem de erro relacionada à validação de tipo de dados. Na string, utilize {dataType} para aparecer na mensagem o tipo de dados configurado para esta validação
  * @param {string=} rules[].message.list Propriedade para personalizar a mensagem de erro relacionada à validação de valores permitidos. Na string, utilize {list} para aparecer na mensagem a lista de valores configurada para esta validação
@@ -29,15 +30,15 @@ const path = require("path");
  */
 function validateData(data, rules, allowedFields) {
 
-    if (rules === undefined || data === undefined || typeof data !== "object") {
-        console.error("validate: Um dos argumentos obrigatórios na função não foi declarado");
+    if (!rules || typeof data !== "object") {
+        console.error("validateData: Um dos argumentos obrigatórios na função não foi declarado");
         return false;
     }
 
     let availableFieldIndex;
     let key;
-    let fvsIndex;
-    let fvs;
+    let rulesIndex;
+    let r;
     let validated = true;
     let msg;
     let rf;
@@ -61,30 +62,35 @@ function validateData(data, rules, allowedFields) {
             }
         }
 
-        fvsIndex = rules.findIndex((item) => {
+        rulesIndex = rules.findIndex((item) => {
             return item.name === key;
         });
 
-        if (fvsIndex < 0) {
+        if (rulesIndex < 0) {
             continue;
         }
 
-        if (rules[fvsIndex].customValidation !== undefined && rules[fvsIndex].customValidation !== null && rules[fvsIndex].customValidation !== "") {
-            //CHAMAR FUNÇÃO DE VALIDAÇÃO CUSTOMIZADA AQUI
-            continue;
+        if (rules[rulesIndex].custom !== undefined && rules[rulesIndex].custom !== null && rules[rulesIndex].custom !== "") {
+
+            if(typeof customValidation[rules[rulesIndex].customValidation] !== "object"){
+                console.error(`Não há validação customizada com o nome ${rules[rulesIndex].customValidation}`);
+                return {validate: false};
+            }
+            else{
+                rules[rulesIndex] = customValidation[rules[rulesIndex].customValidation];
+            }
         }
 
 
-
-        for (fvs in rules[fvsIndex]) {
-            switch (fvs.toUpperCase()) {
+        for (r in rules[rulesIndex]) {
+            switch (r.toUpperCase()) {
                 case "LIST":
-                    if (Array.isArray(rules[fvsIndex]["list"]) === false) {
+                    if (Array.isArray(rules[rulesIndex]["list"]) === false) {
                         console.error(`A propriedade 'list' precisa ser necessariamente um Array`);
                         return {validate: false};
                     }
 
-                    let listValueIndex = rules[fvsIndex]["list"].findIndex((listValue) => {
+                    let listValueIndex = rules[rulesIndex]["list"].findIndex((listValue) => {
                         return data[key] === listValue;
                     });
 
@@ -95,56 +101,56 @@ function validateData(data, rules, allowedFields) {
                 break;
 
                 case "DATATYPE":
-                    if (rules[fvsIndex].dataType.toUpperCase() === "ARRAY") {
+                    if (rules[rulesIndex].dataType.toUpperCase() === "ARRAY") {
                         if (Array.isArray(data[key]) === false) {
                             validated = false;
                             msg = `O valor de '${key}' não é um Array`;
                         }
                     }
-                    else if ((typeof data[key]).toUpperCase() !== rules[fvsIndex].dataType.toUpperCase()) {
+                    else if ((typeof data[key]).toUpperCase() !== rules[rulesIndex].dataType.toUpperCase()) {
                         validated = false;
                         msg = `O valor de '${key}' não corresponde ao tipo de dado exigido`;
                     }
                 break;
 
                 case "MINLENGTH":
-                    if (rules[fvsIndex].minLength === undefined || rules[fvsIndex].minLength === null || rules[fvsIndex].minLength < 1) {
+                    if (rules[rulesIndex].minLength === undefined || rules[rulesIndex].minLength === null || rules[rulesIndex].minLength < 1) {
                         break;
                     }
-                    if (data[key].length < rules[fvsIndex].minLength) {
+                    if (data[key].length < rules[rulesIndex].minLength) {
                         validated = false;
                         msg = `O valor de '${key}' não possui a quantidade mínima de caracteres exigida`;
                     }
                 break;
 
                 case "MAXLENGTH":
-                    if (rules[fvsIndex].maxLength === undefined || rules[fvsIndex].maxLength === null || rules[fvsIndex].maxLength < 1) {
+                    if (rules[rulesIndex].maxLength === undefined || rules[rulesIndex].maxLength === null || rules[rulesIndex].maxLength < 1) {
                         break;
                     }
-                    if (data[key].length > rules[fvsIndex].maxLength) {
+                    if (data[key].length > rules[rulesIndex].maxLength) {
                         validated = false;
                         msg = `O valor de '${key}' possui quantidade de caracteres/ítens maior que o máximo permitido`;
                     }
                 break;
 
                 case "RANGE":
-                    if (rules[fvsIndex].range.min !== undefined && rules[fvsIndex].range.max !== undefined) {
+                    if (rules[rulesIndex].range.min !== undefined && rules[rulesIndex].range.max !== undefined) {
                         if(typeof data[key] === "number"){
-                            if(typeof rules[fvsIndex].range.max === "number" && typeof rules[fvsIndex].range.min === "number"){
+                            if(typeof rules[rulesIndex].range.max === "number" && typeof rules[rulesIndex].range.min === "number"){
 
-                                if(rules[fvsIndex].range.min > rules[fvsIndex].range.max){
-                                    let minRange = rules[fvsIndex].range.min;
-                                    rules[fvsIndex].range.min = rules[fvsIndex].range.max;
-                                    rules[fvsIndex].range.max = minRange;
+                                if(rules[rulesIndex].range.min > rules[rulesIndex].range.max){
+                                    let minRange = rules[rulesIndex].range.min;
+                                    rules[rulesIndex].range.min = rules[rulesIndex].range.max;
+                                    rules[rulesIndex].range.max = minRange;
                                 }
 
-                                if(data[key] < rules[fvsIndex].range.min || data[key] > rules[fvsIndex].range.max){
+                                if(data[key] < rules[rulesIndex].range.min || data[key] > rules[rulesIndex].range.max){
                                     validated = false;
-                                    msg = `O valor de ${key} necessita estar entre ${rules[fvsIndex].range.min} e ${rules[fvsIndex].range.max}`;
+                                    msg = `O valor de ${key} necessita estar entre ${rules[rulesIndex].range.min} e ${rules[rulesIndex].range.max}`;
                                 }
                             }
                             else{
-                                console.error(`Propriedade 'range' necessita ter dois números para definir o intervalo`);
+                                console.error(`Propriedade 'range' necessita ter dois números para definir o intervalo. Propriedades 'min' e 'max'`);
                                 return { validate: false };
                             }
                         }
@@ -154,12 +160,22 @@ function validateData(data, rules, allowedFields) {
                         }
                     }
                 break;
+
+                case "REGEX":
+                    console.log(data[key])
+                    let matches = data[key].match(rules[rulesIndex][r]);
+                    
+                    if(!matches){
+                        validated = false;
+                        msg = `O valor do campo ${key} não corresponde ao formato de dado exigido`;
+                    }
+                break;
             }
 
             if(!validated){
-                if (typeof rules[fvsIndex].message === "object") {
-                    if (typeof rules[fvsIndex].message[fvs] === "string") {
-                        msg = setErrorMessage({field: key, value: data[key], validationParamName: fvs, validationParamValue: rules[fvsIndex][fvs], message: rules[fvsIndex].message[fvs]});
+                if (typeof rules[rulesIndex].message === "object") {
+                    if (typeof rules[rulesIndex].message[r] === "string") {
+                        msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
                     }
                 }
                 return {validate: false, message: msg}
@@ -197,7 +213,7 @@ function validateData(data, rules, allowedFields) {
 
 
 /** @description Retorna Mensagem de Erro Personalizada
- * @param { {field?: string, value?: any, validationParamName: "dataType" | "list" | "minLength" | "maxLength" | "range", validationParamValue?: any, message: string} } config
+ * @param { {field?: string, value?: any, validationParamName: "dataType" | "list" | "minLength" | "maxLength" | "range" | "custom", validationParamValue?: any, message: string} } config
  * @return {string} Mensagem de Erro
  */
 function setErrorMessage(config){
@@ -225,24 +241,3 @@ function setErrorMessage(config){
     return msg;
 
 }
-
-/** @description Validação Personalizada
- * @param { {field: string, value: any, customValidation: string, message: string} } config
- * @return {boolean} Mensagem de Erro
- */
-function customizedValidate(config){
-
-    let jsonFile = fs.readFileSync(path.join(__dirname,"..","custom.validation.json"), {encoding: "utf-8"});
-    jsonFile = JSON.parse(jsonFile);
-
-    let RegExpStr = jsonFile.customValidation[config.customValidation].regex;
-    let regex = new RegExp(RegExpStr);
-    console.log(regex)
-    console.log(RegExpStr)
-
-    const matches = config.value.match(RegExpStr);
-    console.log(matches)
-
-}
-
-customizedValidate({value: "daiangm@gmail.com", customValidation: "email"});

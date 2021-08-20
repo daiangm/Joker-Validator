@@ -1,4 +1,5 @@
 const validate = require('./index');
 
-result = validate( {phone: null}, [{name: "phone", dataType: "number", message: {dataType: "O valor do campo {field} precisa ser um número", } }]);
+const result = validate( {email: "daian"}, [{name: "email", customValidation: "email", message: {customValidation: "O valor do campo {field} precisa ser um e-mail"} }]);
+
 console.log(result);
