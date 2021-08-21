@@ -1,10 +1,10 @@
 /**
- * @file JSON Schema Validation - Documentation Language: Brazilian Portuguese
+ * @file JSON Schema Validator - Documentation Language: Brazilian Portuguese
  * @author Daian Gouveia Morato <daiangm@gmail.com>
  * @author Caroline Camelo <>
  * @copyright Daian Gouveia Morato 2021
  * @tutorial https://github.com/daiangm/json-validator-BR 
- */
+*/
 
 const customValidation = require('../custom.validation');
 
@@ -19,8 +19,7 @@ const customValidation = require('../custom.validation');
  * @param {string} rules[].name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
  * @param { "string" | "number" | "object" | "array" =} rules[].dataType Tipo de dado esperado do valor do campo definido na propriedade 'name'
  * @param {[string | number]=} rules[].list Utilize esta propriedade para definir uma lista de valores para validação do campo definido na propriedade 'name'
- * @param {number=} rules[].minLength Quantidade mínima de caracteres/itens do valor do campo definido na propriedade 'name'
- * @param {number=} rules[].maxLength Quantidade máxima de caracteres/itens do valor do campo definido na propriedade 'name'
+ * @param {{min: number, max: number}=} rules[].len Utilize as propriedades "min" e "max" para definir a quantidade mínima e máxima de caracteres / itens
  * @param {{min: number, max: number}=} rules[].range Utilize as propriedades "min" e "max" para definir o intervalo (Validação ocorre apenas para valores como números e datas)
  * @param {boolean=} rules[].required Define se o campo possui preenchimento obrigatório
  * @param {RegExp=} rules[].regex Expressão regular para validação do valor do campo definido na propriedade 'name'
@@ -28,14 +27,13 @@ const customValidation = require('../custom.validation');
  * @param {object} rules[].message Propriedade para personalizar a mensagem de erro para cada tipo de validação. Na string, utilize {field} para aparecer o nome do campo, {value} para aparecer o valor invalidado
  * @param {string=} rules[].message.dataType Propriedade para personalizar a mensagem de erro relacionada à validação de tipo de dados. Na string, utilize {dataType} para aparecer na mensagem o tipo de dados configurado para esta validação
  * @param {string=} rules[].message.list Propriedade para personalizar a mensagem de erro relacionada à validação de valores permitidos. Na string, utilize {list} para aparecer na mensagem a lista de valores configurada para esta validação
- * @param {string=} rules[].message.minLength Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade mínima de caracteres / itens. Na string, utilize {minLength} para aparecer na mensagem o valor configurado para esta validação
- * @param {string=} rules[].message.maxLength Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade máxima de caracteres / itens. Na string, utilize {maxLength} para aparecer na mensagem o valor configurado para esta validação
+ * @param {string=} rules[].message.len Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade mínima e máxima de caracteres / itens. Na string, utilize {len[min]} para aparecer na mensagem o valor mínimo configurado para esta validação e {len[max]} para o valor máximo
  * @param {string=} rules[].message.range Propriedade para personalizar a mensagem de erro relacionada à validação de intervalo permitido. Na string, utilize {range[min]} para aparecer na mensagem o valor mínimo e {range[max]} para aparecer o valor máximo configurado para esta validação
  * @param {string=} rules[].message.regex Propriedade para personalizar a mensagem de erro relacionada à validação através de uma expressão regular.
  * @param {string=} rules[].message.required
- * @param {["field1", "field2" ... string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
+ * @param {[string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
- */
+*/
 function validateData(data, rules, allowedFields) {
 
     if (!rules || typeof data !== "object") {
@@ -78,7 +76,7 @@ function validateData(data, rules, allowedFields) {
             continue;
         }
 
-        if (rules[rulesIndex].custom !== undefined && rules[rulesIndex].custom !== null && rules[rulesIndex].custom !== "") {
+        if (rules[rulesIndex].custom) {
 
             if(typeof customValidation[rules[rulesIndex].custom] !== "object"){
                 console.error(`Não há validação personalizada com o nome '${rules[rulesIndex].custom}'`);
@@ -92,12 +90,12 @@ function validateData(data, rules, allowedFields) {
         for (r in rules[rulesIndex]) {
             switch (r.toUpperCase()) {
                 case "LIST":
-                    if (Array.isArray(rules[rulesIndex]["list"]) === false) {
-                        console.error(`A propriedade 'list' precisa ser necessariamente um Array`);
+                    if (Array.isArray(rules[rulesIndex][r]) === false) {
+                        console.error(`A propriedade 'list' precisa ser um Array`);
                         return {validate: false};
                     }
 
-                    let listValueIndex = rules[rulesIndex]["list"].findIndex((listValue) => {
+                    let listValueIndex = rules[rulesIndex][r].findIndex((listValue) => {
                         return data[key] === listValue;
                     });
 
@@ -108,52 +106,47 @@ function validateData(data, rules, allowedFields) {
                 break;
 
                 case "DATATYPE":
-                    if (rules[rulesIndex].dataType.toUpperCase() === "ARRAY") {
+                    if (rules[rulesIndex][r].toUpperCase() === "ARRAY") {
                         if (Array.isArray(data[key]) === false) {
                             validated = false;
                             msg = `O valor de '${key}' não é um Array`;
                         }
                     }
-                    else if ((typeof data[key]).toUpperCase() !== rules[rulesIndex].dataType.toUpperCase()) {
+                    else if ((typeof data[key]).toUpperCase() !== rules[rulesIndex][r].toUpperCase()) {
                         validated = false;
                         msg = `O valor de '${key}' não corresponde ao tipo de dado exigido`;
                     }
                 break;
 
-                case "MINLENGTH":
-                    if (rules[rulesIndex].minLength === undefined || rules[rulesIndex].minLength === null || rules[rulesIndex].minLength < 1) {
-                        break;
+                case "LEN":
+                    if (rules[rulesIndex][r].min > 0) {
+                        if (data[key].length < rules[rulesIndex][r].min) {
+                            validated = false;
+                            msg = `O valor de '${key}' não possui a quantidade mínima de caracteres exigida`;
+                        }
                     }
-                    if (data[key].length < rules[rulesIndex].minLength) {
-                        validated = false;
-                        msg = `O valor de '${key}' não possui a quantidade mínima de caracteres exigida`;
-                    }
-                break;
-
-                case "MAXLENGTH":
-                    if (rules[rulesIndex].maxLength === undefined || rules[rulesIndex].maxLength === null || rules[rulesIndex].maxLength < 1) {
-                        break;
-                    }
-                    if (data[key].length > rules[rulesIndex].maxLength) {
-                        validated = false;
-                        msg = `O valor de '${key}' possui quantidade de caracteres/ítens maior que o máximo permitido`;
+                    if (rules[rulesIndex][r].max > 0) {
+                        if (data[key].length > rules[rulesIndex][r].max) {
+                            validated = false;
+                            msg = `O valor de '${key}' possui quantidade de caracteres/ítens maior que o máximo permitido`;
+                        }
                     }
                 break;
 
                 case "RANGE":
-                    if (rules[rulesIndex].range.min !== undefined && rules[rulesIndex].range.max !== undefined) {
+                    if (rules[rulesIndex][r].min !== undefined && rules[rulesIndex][r].max !== undefined) {
                         if(typeof data[key] === "number"){
-                            if(typeof rules[rulesIndex].range.max === "number" && typeof rules[rulesIndex].range.min === "number"){
+                            if(typeof rules[rulesIndex][r].max === "number" && typeof rules[rulesIndex][r].min === "number"){
 
-                                if(rules[rulesIndex].range.min > rules[rulesIndex].range.max){
-                                    let minRange = rules[rulesIndex].range.min;
-                                    rules[rulesIndex].range.min = rules[rulesIndex].range.max;
-                                    rules[rulesIndex].range.max = minRange;
+                                if(rules[rulesIndex][r].min > rules[rulesIndex][r].max){
+                                    let minRange = rules[rulesIndex][r].min;
+                                    rules[rulesIndex][r].min = rules[rulesIndex][r].max;
+                                    rules[rulesIndex][r].max = minRange;
                                 }
 
-                                if(data[key] < rules[rulesIndex].range.min || data[key] > rules[rulesIndex].range.max){
+                                if(data[key] < rules[rulesIndex][r].min || data[key] > rules[rulesIndex][r].max){
                                     validated = false;
-                                    msg = `O valor de ${key} necessita estar entre ${rules[rulesIndex].range.min} e ${rules[rulesIndex].range.max}`;
+                                    msg = `O valor de ${key} necessita estar entre ${rules[rulesIndex][r].min} e ${rules[rulesIndex][r].max}`;
                                 }
                             }
                             else{
@@ -185,7 +178,6 @@ function validateData(data, rules, allowedFields) {
                         msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message[r]});
                     }
                     else if(typeof rules[rulesIndex].message.custom === "string"){
-                        console.log("Blz")
                         msg = setErrorMessage({field: key, value: data[key], validationParamName: r, validationParamValue: rules[rulesIndex][r], message: rules[rulesIndex].message.custom});
                     }
                 }
@@ -246,6 +238,11 @@ function setErrorMessage(config){
         case "range":
             msg = msg.replace(`{range[min]}`, config.validationParamValue.min);
             msg = msg.replace(`{range[max]}`, config.validationParamValue.max);
+        break;
+
+        case "len":
+            msg = msg.replace(`{len[min]}`, config.validationParamValue.min);
+            msg = msg.replace(`{len[max]}`, config.validationParamValue.max);
         break;
 
         default:
