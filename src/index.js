@@ -198,7 +198,7 @@ function validateData(data, rules, allowedFields) {
 
                     if (!matches) {
                         validated = false;
-                        msg = `O valor do campo ${key} não corresponde ao formato de dado exigido`;
+                        msg = `O valor do campo '${key}' não corresponde ao formato de dado exigido`;
                     }
                     break;
             }
