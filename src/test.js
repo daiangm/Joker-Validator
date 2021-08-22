@@ -1,5 +1,5 @@
 const validate = require('./index');
 
-const result = validate( {phone: "(62)99940-4467"}, [{name: "phone", custom: "phone", message: {custom: "{value} não é um número de celular válido"} }]);
+const result = validate({ date: "2021-08-31" }, [{ name: "date", dataType: "date", range: { min: "2021-08-31", max: "2021-08-01" } }]);
 
 console.log(result);
