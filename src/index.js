@@ -13,7 +13,7 @@ const customValidation = require('../custom.validation');
 module.exports = validateData;
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
- * @example validateData()
+ * @example validateData({})
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
  * @param {Object[]} rules Array de Objetos contendo os parâmetros de validação dos dados enviados no argumento 'data'
  * @param {string} rules[].name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
@@ -30,7 +30,7 @@ module.exports = validateData;
  * @param {string=} rules[].message.len Propriedade para personalizar a mensagem de erro relacionada à validação de quantidade mínima e máxima de caracteres / itens. Na string, utilize {len[min]} para aparecer na mensagem o valor mínimo configurado para esta validação e {len[max]} para o valor máximo
  * @param {string=} rules[].message.range Propriedade para personalizar a mensagem de erro relacionada à validação de intervalo permitido. Na string, utilize {range[min]} para aparecer na mensagem o valor mínimo e {range[max]} para aparecer o valor máximo configurado para esta validação
  * @param {string=} rules[].message.regex Propriedade para personalizar a mensagem de erro relacionada à validação através de uma expressão regular.
- * @param {string=} rules[].message.required
+ * @param {string=} rules[].message.required Propriedade para personalizar a mensagem de erro relacionada à validação de campos obrigatórios.
  * @param {[string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
 */
@@ -58,10 +58,7 @@ function validateData(data, rules, allowedFields) {
                     return fieldName === key;
                 });
 
-                if (availableFieldIndex >= 0) {
-                    allowedFields.splice(availableFieldIndex, 1);
-                }
-                else {
+                if (availableFieldIndex < 0) {
                     console.error(`validate: '${key}' não é um campo válido para requisição efetuada`);
                     return { validate: false, message: `'${key}' não é um campo válido para requisição efetuada` };
                 }
