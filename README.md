@@ -1,7 +1,7 @@
 # json-validator-BR
 Validador de dados JSON para NodeJS
 
-<h1> O validador de dados processa e garante a entrega de dados de forma limpa pois a validação confere a integridade dos dados que são inseridos e assegura-se de que esses dados alcancem os determinados critérios de qualidade. </h1>
+<h2> O validador de dados processa e garante a entrega de dados de forma limpa pois a validação confere a integridade dos dados que são inseridos e assegura-se de que esses dados alcancem os determinados critérios de qualidade. </h2>
 
 const validate = require('lib/validate/src/index');
 
