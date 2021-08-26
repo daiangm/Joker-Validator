@@ -57,4 +57,8 @@ const result = validate(dataExample, rules, allowedFields);
 
 console.log(result);
 
+if(!result.validate){
+    return false;
+}
+
 ```
