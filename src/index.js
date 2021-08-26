@@ -6,11 +6,9 @@
  * @tutorial https://github.com/daiangm/json-validator-BR 
 */
 
-module.exports = validateData;
+module.exports = validate;
 
 "use strict";
-
-const customValidation = require('../custom.validation');
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
  * @example validateData({})
@@ -34,6 +32,24 @@ const customValidation = require('../custom.validation');
  * @param {[string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
 */
+function validate(data, rules, allowedFields){
+
+    let result;
+
+    try{
+        result = validateData(data, rules, allowedFields)
+    }
+    catch(err){
+        console.error(err);
+        return {validate: false, message: "Ocorreu um erro desconhecido na tentativa de validação dos dados."}
+    }
+
+    return result;
+
+}
+
+const customValidation = require('../custom.validation');
+
 function validateData(data, rules, allowedFields) {
 
     if (typeof rules !== "object" || typeof data !== "object") {
