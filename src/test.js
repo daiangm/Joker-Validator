@@ -8,49 +8,43 @@ const dataExample = {
     password: "password",
     phone: "(62)99999-9999",
     cpf: "000.000.000-00",
-    birthdate: "1990-12-09",
+    birthdate: "12/12/1990",
     uf: "GO"
 }
 
-const rules = [
-    {
-        name: "username",
+const rules = {
+    username: {
         dataType: "string",
         len: { min: 3, max: 16 },
         required: true
     },
-    {
-        name: "email",
+    email: {
         custom: "email",
         required: true,
         message: { custom: "'{value}' não é um endereço de e-mail válido" }
     },
-    {
-        name: "password",
+    password: {
         dataType: "string",
         len: { min: 3, max: 16 },
         required: true,
         message: {required: "É obrigatório o preenchimento do campo '{field}'"}
     },
-    {
-        name: "phone",
+    phone: {
         custom: "phone",
-        require: true
+        required: true
     },
-    {
-        name: "cpf",
+    cpf: {
         regex: /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/i
     },
-    {
-        name: "birthdate",
+    birthdate: {
+        dataType: "date",
         range: { min: "1900-01-01", max: "2003-01-01"}
     },
-    {
-        name: "uf",
+    uf: {
         list: ["GO", "MT", "MS"],
         message: { list: "O valor do campo '{field}' precisa ser preenchido com um dos valores da lista: {list}" }
     }
-]
+}
 
 const allowedFields = ["username", "email", "password", "phone", "cpf", "birthdate", "uf"]
 
