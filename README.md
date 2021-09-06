@@ -63,17 +63,30 @@ Compara se o valor do campo em ***data*** se enquadra na <a href="https://regexr
 Ex: ``cep: {regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i}``</br>
 </br>
 
+<a href="#custom"><img id="custom" src="https://img.shields.io/static/v1?label=custom&message=String&color=9cf&style=social" /></a> </br>
+Compara o valor do campo em ***data*** conforme configuração de validação no Objeto ***customValidation*** em <a href="https://github.com/daiangm/json-validator-BR/blob/main/custom.validation.js" target="_blank"><i>custom.validation.js</i></a>. </br>
+Ex: ``email: {custom: "email"}``</br>
+##### Em ***customValidation***, você pode adicionar um conjunto de regras de validação e atribuir o nome que desejar.
+</br>
+
+<a href="#message"><img id="message" src="https://img.shields.io/static/v1?label=message&message=Object&color=9cf&style=social" /></a> </br>
+Personaliza a mensagem de erro no retorno da função</br>
+Ex: ``library: {dataType: "number", message: {dataType: "'{value}' do campo '{field}' não corresponde ao tipo de dado '{dataType}'"} }``</br>
+Retorno do exemplo acima: </br>
+``{validate: false, message: "'json-validator' do campo 'library' não corresponde ao tipo de dado 'number'"}``
+</br>
+
 Verificar <a href="#exemplo"><i>const rules</i></a> no exemplo abaixo.
 
 ### allowedFields
 <a href="#allowedFields"><img id="allowedFields" src="https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=informational" /></a> </br>
 Array que contêm os nomes dos campos aceitáveis em <i>data</i>. Este parâmetro serve para limitar quais campos serão aceitos e não permite que tenha outros campos em <i>data</i>, ou seja, caso tenha algum campo com nome diferente dos que estão listados em <i>allowedFields</i>, a função retornará ``{validate: false}``</br>
-Verificar <i>const</i> ``allowedFields`` no exemplo abaixo.
+Verificar <a href="#exemplo"><i>const allowedFields</i></a> no exemplo abaixo.
 
 ## Exemplo
 
 ```javascript
-const validate = require('lib/validate/src/index');
+const validate = require('lib/validate/src/index'); //--> No seu projeto, você deve clonar o json-validator para a pasta lib/validate
 
 
 const dataExample = {
