@@ -38,7 +38,7 @@ Valores aceitáveis: <i>string</i>, <i>number</i>, <i>boolean</i>, <i>date</i> (
 Ex: ```library: {dataType: "string"}``` </br>
 </br>
 
-<img id="length" src="https://img.shields.io/static/v1?label=length&message=Object&color=9cf&style=social" /> </br>
+<a href="#length"><img id="length" src="https://img.shields.io/static/v1?label=length&message=Object&color=9cf&style=social" /></a> </br>
 Define a quantidade mínima e máxima de caracteres de uma <i>String</i> ou itens de um <i>Array</i>. Você deve utilizar as propriedades <i><b>min</b></i> e <i><b>max</b></i>. </br>
 Ex: ``library: {length: { min: 4, max: 14 }}`` </br>
 </br>
