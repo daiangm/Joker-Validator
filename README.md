@@ -1,4 +1,4 @@
-# json-validator-BR
+# JSON-Validator-Brazil
 Validador de dados JSON para NodeJS
 
 ## O <b>json-validator</b> analisa os dados indicados e os valida através de regras personalizadas enviadas como parâmetros na função.
