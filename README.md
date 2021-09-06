@@ -1,7 +1,7 @@
 # JSON-Validator-Brazil
 Validador de dados JSON para NodeJS
 
-## O <b>json-validator</b> analisa os dados indicados e os valida através de regras personalizadas enviadas como parâmetros na função.
+## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
 Este método funciona através de 3 argumentos: <i><b>data</b></i>, <i><b>rules</b></i> e <i><b>allowedFields</b></i>.
 
