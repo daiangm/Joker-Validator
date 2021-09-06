@@ -59,7 +59,7 @@ Ex: ``library: {required: true}``</br>
 </br>
 
 <a href="#regex"><img id="regex" src="https://img.shields.io/static/v1?label=regex&message=RegExp&color=9cf&style=social" /></a> </br>
-Compara se o valor do campo em ***data*** se enquadra na <a href="https://regexr.com/" target="_blank">Expressão Regular em Javascript</a>.</br>
+Compara se o valor do campo em ***data*** se enquadra na <a href="https://regexr.com/" target="_blank">Expressão Regular em Javascript</a>. definida na propriedade.</br>
 Ex: ``cep: {regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i}``</br>
 </br>
 
