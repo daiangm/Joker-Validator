@@ -32,7 +32,7 @@ Objeto Javascript que contêm as regras para validação dos valores enviados em
 
 <u>Propriedades aceitáveis</u>:
 
-<a href="#length"><img id="dataType" src="https://img.shields.io/static/v1?label=dataType&message=String&color=9cf&style=social" /></a> </br>
+<a href="#dataType"><img id="dataType" src="https://img.shields.io/static/v1?label=dataType&message=String&color=9cf&style=social" /></a> </br>
 Esta propriedade serve para comparar se o tipo de dado enviado em <i><b>data</b></i> (conforme a chave indicada) corresponde ao valor setado aqui. </br>
 Valores aceitáveis: <i>string</i>, <i>number</i>, <i>boolean</i>, <i>date</i> (UTC), <i>object</i> e <i>array</i> </br>
 Ex: ```library: {dataType: "string"}``` </br>
@@ -70,7 +70,9 @@ Ex: ``email: {custom: "email"}``</br>
 </br>
 
 <a href="#message"><img id="message" src="https://img.shields.io/static/v1?label=message&message=Object&color=9cf&style=social" /></a> </br>
-Personaliza a mensagem de erro no retorno da função</br>
+Personaliza a mensagem de erro no retorno da função conforme a regra definida. </br>
+Na _String_ da mensagem, utilize {value} para imprimir o valor do campo em ***data***, {field} para o nome do campo/chave em ***data*** e {<i>NomeDaRegra</i>} para o valor da regra (Ex: {list}) </br>
+Para valores das regras utilize: {dataType}, {minLength}, {maxLength}, {minRange}, {maxRange}, {list}, {required}, {regex} e {custom}.
 Ex: ``library: {dataType: "number", message: {dataType: "'{value}' do campo '{field}' não corresponde ao tipo de dado '{dataType}'"} }``</br>
 Retorno do exemplo acima: </br>
 ``{validate: false, message: "'json-validator' do campo 'library' não corresponde ao tipo de dado 'number'"}``
