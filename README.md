@@ -67,6 +67,7 @@ Ex: ``cep: {regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i}``</br>
 Compara o valor do campo em ***data*** conforme configuração de validação no Objeto ***customValidation*** em <a href="https://github.com/daiangm/json-validator-BR/blob/main/custom.validation.js" target="_blank"><i>custom.validation.js</i></a>. </br>
 Ex: ``email: {custom: "email"}``</br>
 ##### Em ***customValidation***, você pode adicionar um conjunto de regras de validação e atribuir o nome que desejar.
+##### Por padrão, ***customValidation*** possui validação de número de celular (formato brasileiro), e-mail, CEP e URL.
 </br>
 
 <a href="#message"><img id="message" src="https://img.shields.io/static/v1?label=message&message=Object&color=9cf&style=social" /></a> </br>
