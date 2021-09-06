@@ -46,7 +46,7 @@ Ex: ``library: {length: { min: 4, max: 14 }}`` </br>
 <a href="#range"><img id="range" src="https://img.shields.io/static/v1?label=range&message=Object&color=9cf&style=social" /></a> </br>
 Define um intervalo númerico ou de data (date) aceitável para o valor enviado em <i><b>data</b></i> na chave indicada. Você deve utilizar as propriedades <i><b>min</b></i> e <i><b>max</b></i>. </br>
 Ex: ``date: {range: { min: "1921-01-01", max: "1999-01-01"}}``</br>
-###### --> Neste exemplo, queremos determinar que <i>date</i> só é aceitável com um intervalo entre 18 e 100 anos em relação à 01/01/2021
+###### --> Neste exemplo, queremos determinar que o valor de <i>date</i> em ***data*** só é aceitável em um intervalo entre 18 e 100 anos em relação à 01/01/2021
 
 <a href="#list"><img id="list" src="https://img.shields.io/static/v1?label=list&message=Array&color=9cf&style=social" /></a> </br>
 Array de _Strings_ e/ou Números aceitáveis para o valor de uma determinada chave em <i><b>data</b></i>. </br>
@@ -58,10 +58,15 @@ Determina se o valor do campo em ***data*** é de preenchimento obrigatório.</b
 Ex: ``library: {required: true}``</br>
 </br>
 
-Verificar ***const rules*** no exemplo abaixo.
+<a href="#regex"><img id="regex" src="https://img.shields.io/static/v1?label=regex&message=RegExp&color=9cf&style=social" /></a> </br>
+Compara se o valor do campo em ***data*** se enquadra na <a href="https://regexr.com/" target="_blank">Expressão Regular em Javascript</a>.</br>
+Ex: ``cep: {regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i}``</br>
+</br>
+
+Verificar <a href="#exemplo"><i>const rules</i></a> no exemplo abaixo.
 
 ### allowedFields
-![Badge](https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=informational) </br>
+<a href="#allowedFields"><img id="allowedFields" src="https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=informational" /></a> </br>
 Array que contêm os nomes dos campos aceitáveis em <i>data</i>. Este parâmetro serve para limitar quais campos serão aceitos e não permite que tenha outros campos em <i>data</i>, ou seja, caso tenha algum campo com nome diferente dos que estão listados em <i>allowedFields</i>, a função retornará ``{validate: false}``</br>
 Verificar <i>const</i> ``allowedFields`` no exemplo abaixo.
 
