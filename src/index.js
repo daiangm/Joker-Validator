@@ -99,32 +99,17 @@ function validateData(data, rules, allowedFields) {
             rulesObj = Object.assign(customValidation[rulesObj.custom], rulesObj);
 
         }
+        const rulesFunctions = {
+            list: (rulesConfig, field, value) => valList(rulesConfig, field, value),
+            datatype: (rulesConfig, field, value) => valDataType(rulesConfig, field, value),
+            len: (rulesConfig, field, value) => valLength(rulesConfig, field, value),
+            range: (rulesConfig, field, value) => valRange(rulesConfig, field, value),
+            regex: (rulesConfig, field, value) => valRegex(rulesConfig, field, value),
+        }
 
-        for(r in rulesObj) {
-
-            switch(r.toLowerCase()){
-
-                case "list":
-                    result = valList(rulesObj[r], key, data[key]);
-                break;
-
-                case "datatype":
-                    result = valDataType(rulesObj[r], key, data[key]);
-                break;
-
-                case "len":
-                    result = valLength(rulesObj[r], key, data[key]);
-                break;
-
-                case "range":
-                    result = valRange(rulesObj[r], key, data[key]);
-                break;
-
-                case "regex":
-                    result = valRegex(rulesObj[r], key, data[key]);
-                break;
-
-            }
+        for (r in rulesObj) {
+            if (rulesFunctions[r.toLowerCase()])
+                result = rulesFunctions[r.toLowerCase()](rulesObj[r], key, data[key])
 
             if (!result.validate) {
 
