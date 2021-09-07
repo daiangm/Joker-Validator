@@ -63,6 +63,7 @@ function validateData(data, rules, allowedFields) {
     let r;
     let validated = true;
     let msg = "Ok";
+    let result;
 
     const rulesArray = Object.getOwnPropertyNames(rules);
 
@@ -101,134 +102,42 @@ function validateData(data, rules, allowedFields) {
 
         for(r in rulesObj) {
 
-            switch (r.toUpperCase()) {
-                case "LIST":
-                    if (!(Array.isArray(rulesObj[r]))) {
-                        console.error(`A propriedade 'list' precisa ser um Array`);
-                        return { validate: false };
-                    }
+            switch(r.toLowerCase()){
 
-                    let listValueIndex = rulesObj[r].findIndex((listValue) => {
-                        return data[key] === listValue;
-                    });
-
-                    if (listValueIndex < 0) {
-                        validated = false;
-                        msg = `O valor '${data[key]}' em '${key}' não está presente na lista de valores permitidos`;
-                    }
-                    break;
-
-                case "DATATYPE":
-
-                    if (rulesObj[r].toUpperCase() === "ARRAY") {
-                        if (Array.isArray(data[key]) === false) {
-                            validated = false;
-                            msg = `O valor de '${key}' não é um Array`;
-                        }
-                    }
-                    else if (rulesObj[r].toUpperCase() === "DATE") {
-
-                        if (!(data[key] instanceof Date) && (typeof data[key] !== "string" || isNaN(Date.parse(data[key])))) {
-                            validated = false;
-                            msg = `O valor de '${key}' não corresponde à uma data válida`;
-                        }
-                    }
-                    else if ((typeof data[key]).toUpperCase() !== rulesObj[r].toUpperCase()) {
-                        validated = false;
-                        msg = `O valor de '${key}' não corresponde ao tipo de dado exigido`;
-                    }
-                    break;
-
-                case "LEN":
-                    if (rulesObj[r].min > 0) {
-                        if (data[key].length < rulesObj[r].min) {
-                            validated = false;
-                            msg = `O valor de '${key}' não possui a quantidade mínima de caracteres exigida`;
-                        }
-                    }
-                    if (rulesObj[r].max > 0) {
-                        if (data[key].length > rulesObj[r].max) {
-                            validated = false;
-                            msg = `O valor de '${key}' possui quantidade de caracteres/ítens maior que o máximo permitido`;
-                        }
-                    }
-                    break;
-
-                case "RANGE":
-
-                    let rangeMin;
-                    let rangeMax;
-                    let dataToRangeValidate;
-
-                    if (!rulesObj[r].min || !rulesObj[r].max) {
-                        console.error(`Para utilizar a propriedade 'range', as propriedades 'min' e 'max' devem estar presentes no objeto com atribuição de número ou data`)
-                        return { validate: false }
-                    }
-
-                    if (typeof data[key] === "string") {
-
-                        if (isNaN(Date.parse(data[key]))) {
-                            console.error(`Valor do campo ${key} não corresponde à um data válida para utilização da validação 'range'`);
-                            return { validate: false };
-                        }
-                        else if (isNaN(Date.parse(rulesObj[r].min)) || isNaN(Date.parse(rulesObj[r].max))) {
-                            console.error(`Valor de data inválida para utilização da propriedade 'range'`);
-                            return { validate: false };
-                        }
-                        else {
-                            rangeMin = Date.parse(rulesObj[r].min);
-                            rangeMax = Date.parse(rulesObj[r].max);
-                            dataToRangeValidate = Date.parse(data[key]);
-                        }
-                    }
-                    else if(typeof data[key] === "number"){
-
-                        if (typeof rulesObj[r].min !== "number" || typeof !rulesObj[r].max !== "number") {
-                            console.error(`Propriedade 'range' necessita ter dois números para definir o intervalo. Propriedades 'min' e 'max'`);
-                            return { validate: false };
-                        }
-                        else {
-                            rangeMin = rulesObj[r].min;
-                            rangeMax = rulesObj[r].max;
-                            dataToRangeValidate = data[key];
-                        }
-                    }
-
-                    if (rangeMin > rangeMax) {
-                        let tempRangeMin = rangeMax;
-                        rangeMax = rangeMin;
-                        rangeMin = tempRangeMin;
-                    }
-
-                    if (dataToRangeValidate < rangeMin || dataToRangeValidate > rangeMax) {
-                        validated = false;
-                        msg = `O valor de ${key} necessita estar entre ${rulesObj[r].min} e ${rulesObj[r].max}`;
-                    }
-
+                case "list":
+                    result = valList(rulesObj[r], key, data[key]);
                 break;
 
-                case "REGEX":
-                    let matches = data[key].match(rulesObj[r]);
+                case "datatype":
+                    result = valDataType(rulesObj[r], key, data[key]);
+                break;
 
-                    if (!matches) {
-                        validated = false;
-                        msg = `O valor do campo '${key}' não corresponde ao formato de dado exigido`;
-                    }
-                    break;
+                case "len":
+                    result = valLength(rulesObj[r], key, data[key]);
+                break;
+
+                case "range":
+                    result = valRange(rulesObj[r], key, data[key]);
+                break;
+
+                case "regex":
+                    result = valRegex(rulesObj[r], key, data[key]);
+                break;
+
             }
 
-            if (!validated) {
+            if (!result.validate) {
 
                 if (typeof rulesObj.message === "object") {
                     if (typeof rulesObj.message[r] === "string") {
-                        msg = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] });
+                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] });
                     }
                     else if (typeof rulesObj.message.custom === "string") {
-                        msg = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message.custom });
+                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message.custom });
                     }
                 }
 
-                return { validate: false, message: msg };
+                return result;
             }
 
         };
@@ -259,6 +168,156 @@ function validateData(data, rules, allowedFields) {
     }
 
     return { validate: validated, message: msg };
+
+}
+
+function valDataType(rulesConfig, field, value){
+
+    if (rulesConfig.toUpperCase() === "ARRAY") {
+        if (Array.isArray(value) === false) {
+            return {validate: false, message: `O valor de '${field}' não é um Array`}
+        }
+    }
+    else if (rulesConfig.toUpperCase() === "DATE") {
+
+        if (!(value instanceof Date) && (typeof value !== "string" || isNaN(Date.parse(value)))) {
+            return {validate: false, message: `O valor de '${field}' não corresponde à uma data válida`}
+        }
+        else{
+            return {validate: true, message: `Ok`}
+        }
+    }
+    else if ((typeof value).toUpperCase() !== rulesConfig.toUpperCase()) {
+        return {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
+    }
+    else{
+        return {validate: true, message: `Ok`}
+    }
+
+}
+
+function valList(rulesConfig, field, value){
+
+    if (!(Array.isArray(rulesConfig))) {
+        console.error(`A propriedade 'list' precisa ser um Array`);
+        return { validate: false };
+    }
+
+    let listValueIndex = rulesConfig.findIndex((listValue) => {
+        return value === listValue;
+    });
+
+    if (listValueIndex < 0) {
+        return {validate: false, msg: `O valor '${value}' em '${field}' não está presente na lista de valores permitidos`}
+    }
+
+    return {validate: true, message: "Ok"}
+
+}
+
+function valLength(rulesConfig, field, value){
+
+    if (rulesConfig.min > 0) {
+        if (value.length < rulesConfig.min) {
+            return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
+        }
+    }
+
+    if (rulesConfig.max > 0) {
+        if (value.length > rulesConfig.max) {
+            return {validate: false, message: `O valor de '${field}' possui quantidade de caracteres/ítens maior que o máximo permitido`}
+        }
+    }
+
+    return {validate: true, message: `Ok`}
+
+}
+
+function valRange(rulesConfig, field, value){
+
+    let rangeMin;
+    let rangeMax;
+    let dataToRangeValidate;
+
+    if(typeof rulesConfig !== "object"){
+        console.error(`A propriedade 'range' precisa ser necessariamente um Objeto`)
+        return { validate: false }
+    }
+    else if (!rulesConfig.min && !rulesConfig.max) {
+        console.error(`Para utilizar a propriedade 'range', as propriedades 'min' e/ou 'max' devem estar presentes no objeto com atribuição de número ou data`)
+        return { validate: false }
+    }
+
+    if (typeof value === "string") {
+
+        if (isNaN(Date.parse(value))) {
+            console.error(`Valor do campo ${field} não corresponde à uma data válida para utilização da validação 'range'`);
+            return { validate: false };
+        }
+
+        if(rulesConfig.min){
+            if (isNaN(Date.parse(rulesConfig.min))) {
+                console.error(`Valor de data inválida para utilização da propriedade 'range'`);
+                return { validate: false };
+            }
+            else{
+                rangeMin = Date.parse(rulesConfig.min);
+            }
+        }
+
+        if (rulesConfig.max){
+            if (isNaN(Date.parse(rulesConfig.max))) {
+                console.error(`Valor de data inválida para utilização da propriedade 'range'`);
+                return { validate: false };
+            }
+            else {
+                rangeMax = Date.parse(rulesConfig.max);
+            }
+        }
+
+        dataToRangeValidate = Date.parse(value);
+    }
+    else if(typeof value === "number"){
+
+        if (typeof rulesConfig.min !== "number" && typeof !rulesConfig.max !== "number") {
+            console.error(`Propriedade 'range' necessita pelo menos um número para definir o intervalo. Propriedades 'min' e/ou 'max'`);
+            return { validate: false };
+        }
+        else {
+            rangeMin = rulesConfig.min;
+            rangeMax = rulesConfig.max;
+            dataToRangeValidate = value;
+        }
+    }
+
+    if (rangeMin > rangeMax) {
+        let tempRangeMin = rangeMax;
+        rangeMax = rangeMin;
+        rangeMin = tempRangeMin;
+    }
+
+    if (dataToRangeValidate < rangeMin) {
+        return{validate: false, message: `O valor de ${field} necessita ser maior ou igual a ${rulesConfig.min}`}
+    }
+
+    if(dataToRangeValidate > rangeMax){
+        return {validate: false, message: `O valor de ${field} necessita ser menor ou igual a ${rulesConfig.max}`}
+    }
+
+    return {validate: true, message: `Ok`};
+
+}
+
+function valRegex(rulesConfig, field, value){
+
+    let matches = value.match(rulesConfig);
+
+    if (!matches) {
+        return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
+    }
+    else{
+        return {validate: true, message: `Ok`}
+    }
 
 }
 

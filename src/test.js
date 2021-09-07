@@ -15,7 +15,7 @@ const dataExample = {
 const rules = {
     username: {
         dataType: "string",
-        len: { min: 3, max: 16 },
+        len: { min: 4 },
         required: true
     },
     email: {

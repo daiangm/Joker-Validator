@@ -3,13 +3,13 @@ Validador de dados JSON para NodeJS
 
 ## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
-Este método funciona através de 3 argumentos: <i><b>data</b></i>, <i><b>rules</b></i> e <i><b>allowedFields</b></i>.
+Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***allowedFields***.
 
 <!--ts-->
    * [data](#data)
    * [rules](#rules)
       * [dataType](#dataType)
-      * [length](#length)
+      * [len](#length)
       * [range](#range)
       * [list](#list)
       * [required](#required)
@@ -38,9 +38,9 @@ Valores aceitáveis: <i>string</i>, <i>number</i>, <i>boolean</i>, <i>date</i> (
 Ex: ```library: {dataType: "string"}``` </br>
 </br>
 
-<a href="#length"><img id="length" src="https://img.shields.io/static/v1?label=length&message=Object&color=9cf&style=social" /></a> </br>
+<a href="#length"><img id="length" src="https://img.shields.io/static/v1?label=len&message=Object&color=9cf&style=social" /></a> </br>
 Define a quantidade mínima e máxima de caracteres de uma <i>String</i> ou itens de um <i>Array</i>. Você deve utilizar as propriedades <i><b>min</b></i> e <i><b>max</b></i>. </br>
-Ex: ``library: {length: { min: 4, max: 14 }}`` </br>
+Ex: ``library: {len: { min: 4, max: 14 }}`` </br>
 </br>
 
 <a href="#range"><img id="range" src="https://img.shields.io/static/v1?label=range&message=Object&color=9cf&style=social" /></a> </br>
