@@ -155,30 +155,45 @@ function validateData(data, rules, allowedFields) {
 
 }
 
-function valDataType(rulesConfig, field, value){
 
-    if (rulesConfig.toUpperCase() === "ARRAY") {
-        if (Array.isArray(value) === false) {
-            return {validate: false, message: `O valor de '${field}' não é um Array`}
-        }
+const ruleIsNotArray = (value, field) => {
+    
+    if (Array.isArray(value) === false) {
+        return {validate: false, message: `O valor de '${field}' não é um Array`}
     }
-    else if (rulesConfig.toUpperCase() === "DATE") {
+}
 
-        if (!(value instanceof Date) && (typeof value !== "string" || isNaN(Date.parse(value)))) {
-            return {validate: false, message: `O valor de '${field}' não corresponde à uma data válida`}
-        }
-        else{
-            return {validate: true, message: `Ok`}
-        }
-    }
-    else if ((typeof value).toUpperCase() !== rulesConfig.toUpperCase()) {
-        return {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
+const ruleIsNotDate = (value, field) => {
+    if (!(value instanceof Date) && (typeof value !== "string" || isNaN(Date.parse(value)))) {
+        return {validate: false, message: `O valor de '${field}' não corresponde à uma data válida`}
     }
     else{
         return {validate: true, message: `Ok`}
     }
-
 }
+
+const isARule = (value, rulesConfig) => (typeof value).toUpperCase() !== rulesConfig.toUpperCase()
+
+const ruleDontKnowType = () => {
+    
+    return {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
+}
+
+const RULES = {
+    "ARRAY": ruleIsNotArray,
+    "DATE": ruleIsNotDate,
+}
+
+const getKeys = o => Object.keys(o)
+
+const valDataType = (rulesConfig, field, value) => 
+    (getKeys(RULES).find(v => v == rulesConfig.toUpperCase()))
+        ? RULES[rulesConfig.toUpperCase()](value, field)
+        : (isARule(value, rulesConfig)) 
+            ?   {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
+            : {validate: true, message: `Ok`}
+
+
 
 function valList(rulesConfig, field, value){
 
@@ -305,6 +320,21 @@ function valRegex(rulesConfig, field, value){
 
 }
 
+const ERRORS = {
+    list: (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString()),
+    range: (msg, config) => {
+        msg = msg.replace(`{range[min]}`, config.validationParamValue.min);
+        msg = msg.replace(`{range[max]}`, config.validationParamValue.max);
+        return msg;
+    },
+    len: (msg, config) => {
+        msg = msg.replace(`{len[min]}`, config.validationParamValue.min);
+        msg = msg.replace(`{len[max]}`, config.validationParamValue.max);
+        return msg;
+    },
+    "undefined": (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue)
+
+}
 
 /** @description Retorna Mensagem de Erro Personalizada
  * @param { {field?: string, value?: any, validationParamName: "dataType" | "list" | "minLength" | "regex" | "maxLength" | "range" | "custom", validationParamValue?: any, message: string} } config
@@ -317,26 +347,5 @@ function setErrorMessage(config) {
     msg = msg.replace(/{field}/g, config.field);
     msg = msg.replace(/{value}/g, config.value);
 
-    switch (config.validationParamName) {
-        case "list":
-            msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString());
-            break;
-
-        case "range":
-            msg = msg.replace(`{range[min]}`, config.validationParamValue.min);
-            msg = msg.replace(`{range[max]}`, config.validationParamValue.max);
-            break;
-
-        case "len":
-            msg = msg.replace(`{len[min]}`, config.validationParamValue.min);
-            msg = msg.replace(`{len[max]}`, config.validationParamValue.max);
-            break;
-
-        default:
-            msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue);
-            break;
-    }
-
-    return msg;
-
+    return ERRORS[config.validationParamName](msg, config);
 }
