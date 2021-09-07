@@ -1,9 +1,6 @@
 /**
  * @file JSON Schema Validator - Documentation Language: Brazilian Portuguese
- * @author Daian Gouveia Morato <daiangm@gmail.com>
- * @author Caroline Camelo <>
- * @copyright Daian Gouveia Morato 2021
- * @tutorial https://github.com/daiangm/json-validator-BR 
+ * @tutorial https://github.com/daiangm/JSON-Validator-Brazil 
 */
 
 module.exports = validate;
@@ -100,16 +97,18 @@ function validateData(data, rules, allowedFields) {
 
         }
         const rulesFunctions = {
-            list: (rulesConfig, field, value) => valList(rulesConfig, field, value),
-            datatype: (rulesConfig, field, value) => valDataType(rulesConfig, field, value),
-            len: (rulesConfig, field, value) => valLength(rulesConfig, field, value),
-            range: (rulesConfig, field, value) => valRange(rulesConfig, field, value),
-            regex: (rulesConfig, field, value) => valRegex(rulesConfig, field, value),
+            list: valList,
+            datatype: valDataType,
+            len: valLength,
+            range: valRange,
+            regex: valRegex,
         }
 
         for (r in rulesObj) {
-            if (rulesFunctions[r.toLowerCase()])
+
+            if (rulesFunctions[r.toLowerCase()]){
                 result = rulesFunctions[r.toLowerCase()](rulesObj[r], key, data[key])
+            }
 
             if (!result.validate) {
 
