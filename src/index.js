@@ -189,25 +189,22 @@ const valDataType = (rulesConfig, field, value) =>
             : {validate: true, message: `Ok`}
 
 
-
-function valList(rulesConfig, field, value){
-
-    if (!(Array.isArray(rulesConfig))) {
-        console.error(`A propriedade 'list' precisa ser um Array`);
-        return { validate: false };
-    }
-
-    let listValueIndex = rulesConfig.findIndex((listValue) => {
-        return value === listValue;
-    });
-
-    if (listValueIndex < 0) {
-        return {validate: false, msg: `O valor '${value}' em '${field}' não está presente na lista de valores permitidos`}
-    }
-
-    return {validate: true, message: "Ok"}
-
+const validateFalse = () => {
+    console.error(`A propriedade 'list' precisa ser um Array`);
+    return { validate: false };
 }
+
+const validateIfIsEqual = (a, b) => a === b
+
+const findListValueIndex = (value, rulesConfig) => 
+    rulesConfig.findIndex((listValue) => validateIfIsEqual(value, listValue));
+
+const valList = (rulesConfig, field, value) => 
+    (!(Array.isArray(rulesConfig)))
+        ?   validateFalse()
+        :   (findListValueIndex(value, rulesConfig) < 0)
+            ?   {validate: false, msg: `O valor '${value}' em '${field}' não está presente na lista de valores permitidos`}
+            :   {validate: true, message: "Ok"}
 
 const valLengthMin = (field, value, rulesConfig) => {
     console.log("valLengthMin", {field}, {value}, {rulesConfig})
