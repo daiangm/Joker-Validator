@@ -336,16 +336,12 @@ const ERRORS = {
 
 }
 
+const replace = (field, value, msg, config) => 
+    msg.replace(/{field}/g, config[field]).replace(/{value}/g, config[value]);
+
 /** @description Retorna Mensagem de Erro Personalizada
  * @param { {field?: string, value?: any, validationParamName: "dataType" | "list" | "minLength" | "regex" | "maxLength" | "range" | "custom", validationParamValue?: any, message: string} } config
  * @return {string} Mensagem de Erro
  */
-function setErrorMessage(config) {
-
-    let msg = config.message;
-
-    msg = msg.replace(/{field}/g, config.field);
-    msg = msg.replace(/{value}/g, config.value);
-
-    return ERRORS[config.validationParamName](msg, config);
-}
+const setErrorMessage = (config) => 
+    ERRORS[config.validationParamName](replace(field, value, config.message, config), config);
