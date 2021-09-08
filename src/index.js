@@ -172,12 +172,7 @@ const ruleIsNotDate = (value, field) => {
     }
 }
 
-const isARule = (value, rulesConfig) => (typeof value).toUpperCase() !== rulesConfig.toUpperCase()
-
-const ruleDontKnowType = () => {
-    
-    return {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
-}
+const isARule = (value, rulesConfig) => (typeof value).toUpperCase() !== rulesConfig.toUpperCase();
 
 const RULES = {
     "ARRAY": ruleIsNotArray,
@@ -214,24 +209,24 @@ function valList(rulesConfig, field, value){
 
 }
 
-function valLength(rulesConfig, field, value){
-
-    if (rulesConfig.min > 0) {
-        if (value.length < rulesConfig.min) {
-            return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
-        }
-    }
-
-    if (rulesConfig.max > 0) {
-        if (value.length > rulesConfig.max) {
-            return {validate: false, message: `O valor de '${field}' possui quantidade de caracteres/ítens maior que o máximo permitido`}
-        }
-    }
-
-    return {validate: true, message: `Ok`}
-
+const valLengthMin = (field, value, rulesConfig) => {
+    console.log("valLengthMin", {field}, {value}, {rulesConfig})
+        return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
 }
 
+const valLengthMax = (field, value, rulesConfig) => {
+    console.log("valLengthMax", {field}, {value}, {rulesConfig})
+        return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
+}
+
+const valLength = (rulesConfig, field, value) => 
+    (rulesConfig.min > 0 && value.length < rulesConfig.min)
+        ?   valLengthMin(field, value, rulesConfig)
+        :   (rulesConfig.max > 0 && value.length > rulesConfig.max) 
+            ?   valLengthMax(field, value, rulesConfig)
+            :   {validate: true, message: `Ok`}
+    
+    
 function valRange(rulesConfig, field, value){
 
     let rangeMin;
@@ -307,18 +302,10 @@ function valRange(rulesConfig, field, value){
 
 }
 
-function valRegex(rulesConfig, field, value){
-
-    let matches = value.match(rulesConfig);
-
-    if (!matches) {
-        return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
-    }
-    else{
-        return {validate: true, message: `Ok`}
-    }
-
-}
+const valRegex = (rulesConfig, field, value) => 
+    (!value.match(rulesConfig)) 
+        ? {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
+        : {validate: true, message: `Ok`}
 
 const ERRORS = {
     list: (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString()),
