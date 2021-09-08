@@ -307,18 +307,10 @@ function valRange(rulesConfig, field, value){
 
 }
 
-function valRegex(rulesConfig, field, value){
-
-    let matches = value.match(rulesConfig);
-
-    if (!matches) {
-        return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
-    }
-    else{
-        return {validate: true, message: `Ok`}
-    }
-
-}
+const valRegex = (rulesConfig, field, value) => 
+    (!value.match(rulesConfig)) 
+        ? {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
+        : {validate: true, message: `Ok`}
 
 const ERRORS = {
     list: (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString()),
