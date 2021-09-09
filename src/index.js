@@ -133,7 +133,7 @@ function validateData(data, rules, allowedFields) {
     }
 
     if (rulesArray.length > 0) {
-        validated = rulesArray.forEach((item) => {
+        rulesArray.forEach((item) => {
             if (rules[item].required) {
                 msg = `É obrigatório atribuir valor ao campo '${item}'`;
 
@@ -146,7 +146,7 @@ function validateData(data, rules, allowedFields) {
                     }
                 }
 
-                return false;
+                return validated = false;
             }
         });
     }
