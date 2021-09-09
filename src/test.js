@@ -16,13 +16,14 @@ const dataExample = {
 const rules = {
     username: {
         dataType: "string",
-        len: { min: 4 },
-        required: true
+        len: { min: 3, max: 16 },
+        required: true,
+        message: {len: "O valor de {field} deve ter entre {len[min]} e {len[max]} caracteres"}
     },
     email: {
         custom: "email",
         required: true,
-        message: { custom: "'{value}' não é um endereço de e-mail válido" }
+        message: { custom: "'{value}' não é um endereço de {field} válido" }
     },
     password: {
         dataType: "string",
@@ -44,6 +45,9 @@ const rules = {
     uf: {
         list: ["GO", "MT", "MS"],
         message: { list: "O valor do campo '{field}' precisa ser preenchido com um dos valores da lista: {list}" }
+    },
+    test: {
+        required: true
     }
 }
 

@@ -1,7 +1,9 @@
 /**
- * @file JSON Schema Validator - Documentation Language: Brazilian Portuguese
+ * @file JSON Validator - Documentation Language: Brazilian Portuguese
  * @tutorial https://github.com/daiangm/JSON-Validator-Brazil 
 */
+
+const {valDataType, valLength, valList, valRange, valRegex} = require('./validations');
 
 module.exports = validate;
 
@@ -96,6 +98,7 @@ function validateData(data, rules, allowedFields) {
             rulesObj = Object.assign(customValidation[rulesObj.custom], rulesObj);
 
         }
+
         const rulesFunctions = {
             list: valList,
             datatype: valDataType,
@@ -133,7 +136,7 @@ function validateData(data, rules, allowedFields) {
     }
 
     if (rulesArray.length > 0) {
-        validated = rulesArray.forEach((item) => {
+        rulesArray.forEach((item) => {
             if (rules[item].required) {
                 msg = `É obrigatório atribuir valor ao campo '${item}'`;
 
@@ -146,7 +149,7 @@ function validateData(data, rules, allowedFields) {
                     }
                 }
 
-                return false;
+                return validated = false;
             }
         });
     }
@@ -155,177 +158,34 @@ function validateData(data, rules, allowedFields) {
 
 }
 
-
-const ruleIsNotArray = (value, field) => {
-    
-    if (Array.isArray(value) === false) {
-        return {validate: false, message: `O valor de '${field}' não é um Array`}
-    }
-}
-
-const ruleIsNotDate = (value, field) => {
-    if (!(value instanceof Date) && (typeof value !== "string" || isNaN(Date.parse(value)))) {
-        return {validate: false, message: `O valor de '${field}' não corresponde à uma data válida`}
-    }
-    else{
-        return {validate: true, message: `Ok`}
-    }
-}
-
-const isARule = (value, rulesConfig) => (typeof value).toUpperCase() !== rulesConfig.toUpperCase();
-
-const RULES = {
-    "ARRAY": ruleIsNotArray,
-    "DATE": ruleIsNotDate,
-}
-
-const getKeys = o => Object.keys(o)
-
-const valDataType = (rulesConfig, field, value) => 
-    (getKeys(RULES).find(v => v == rulesConfig.toUpperCase()))
-        ? RULES[rulesConfig.toUpperCase()](value, field)
-        : (isARule(value, rulesConfig)) 
-            ?   {validate: false, message: `O valor de '${field}' não corresponde ao tipo de dado exigido`}
-            : {validate: true, message: `Ok`}
-
-
-const validateFalse = () => {
-    console.error(`A propriedade 'list' precisa ser um Array`);
-    return { validate: false };
-}
-
-const validateIfIsEqual = (a, b) => a === b
-
-const findListValueIndex = (value, rulesConfig) => 
-    rulesConfig.findIndex((listValue) => validateIfIsEqual(value, listValue));
-
-const valList = (rulesConfig, field, value) => 
-    (!(Array.isArray(rulesConfig)))
-        ?   validateFalse()
-        :   (findListValueIndex(value, rulesConfig) < 0)
-            ?   {validate: false, msg: `O valor '${value}' em '${field}' não está presente na lista de valores permitidos`}
-            :   {validate: true, message: "Ok"}
-
-const valLengthMin = (field, value, rulesConfig) => {
-    console.log("valLengthMin", {field}, {value}, {rulesConfig})
-        return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
-}
-
-const valLengthMax = (field, value, rulesConfig) => {
-    console.log("valLengthMax", {field}, {value}, {rulesConfig})
-        return {validate: false, message: `O valor de '${field}' não possui a quantidade mínima de caracteres exigida`}
-}
-
-const valLength = (rulesConfig, field, value) => 
-    (rulesConfig.min > 0 && value.length < rulesConfig.min)
-        ?   valLengthMin(field, value, rulesConfig)
-        :   (rulesConfig.max > 0 && value.length > rulesConfig.max) 
-            ?   valLengthMax(field, value, rulesConfig)
-            :   {validate: true, message: `Ok`}
-    
-    
-function valRange(rulesConfig, field, value){
-
-    let rangeMin;
-    let rangeMax;
-    let dataToRangeValidate;
-
-    if(typeof rulesConfig !== "object"){
-        console.error(`A propriedade 'range' precisa ser necessariamente um Objeto`)
-        return { validate: false }
-    }
-    else if (!rulesConfig.min && !rulesConfig.max) {
-        console.error(`Para utilizar a propriedade 'range', as propriedades 'min' e/ou 'max' devem estar presentes no objeto com atribuição de número ou data`)
-        return { validate: false }
-    }
-
-    if (typeof value === "string") {
-
-        if (isNaN(Date.parse(value))) {
-            console.error(`Valor do campo ${field} não corresponde à uma data válida para utilização da validação 'range'`);
-            return { validate: false };
-        }
-
-        if(rulesConfig.min){
-            if (isNaN(Date.parse(rulesConfig.min))) {
-                console.error(`Valor de data inválida para utilização da propriedade 'range'`);
-                return { validate: false };
-            }
-            else{
-                rangeMin = Date.parse(rulesConfig.min);
-            }
-        }
-
-        if (rulesConfig.max){
-            if (isNaN(Date.parse(rulesConfig.max))) {
-                console.error(`Valor de data inválida para utilização da propriedade 'range'`);
-                return { validate: false };
-            }
-            else {
-                rangeMax = Date.parse(rulesConfig.max);
-            }
-        }
-
-        dataToRangeValidate = Date.parse(value);
-    }
-    else if(typeof value === "number"){
-
-        if (typeof rulesConfig.min !== "number" && typeof !rulesConfig.max !== "number") {
-            console.error(`Propriedade 'range' necessita pelo menos um número para definir o intervalo. Propriedades 'min' e/ou 'max'`);
-            return { validate: false };
-        }
-        else {
-            rangeMin = rulesConfig.min;
-            rangeMax = rulesConfig.max;
-            dataToRangeValidate = value;
-        }
-    }
-
-    if (rangeMin > rangeMax) {
-        let tempRangeMin = rangeMax;
-        rangeMax = rangeMin;
-        rangeMin = tempRangeMin;
-    }
-
-    if (dataToRangeValidate < rangeMin) {
-        return{validate: false, message: `O valor de ${field} necessita ser maior ou igual a ${rulesConfig.min}`}
-    }
-
-    if(dataToRangeValidate > rangeMax){
-        return {validate: false, message: `O valor de ${field} necessita ser menor ou igual a ${rulesConfig.max}`}
-    }
-
-    return {validate: true, message: `Ok`};
-
-}
-
-const valRegex = (rulesConfig, field, value) => 
-    (!value.match(rulesConfig)) 
-        ? {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
-        : {validate: true, message: `Ok`}
-
-const ERRORS = {
-    list: (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString()),
-    range: (msg, config) => {
-        msg = msg.replace(`{range[min]}`, config.validationParamValue.min);
-        msg = msg.replace(`{range[max]}`, config.validationParamValue.max);
-        return msg;
-    },
-    len: (msg, config) => {
-        msg = msg.replace(`{len[min]}`, config.validationParamValue.min);
-        msg = msg.replace(`{len[max]}`, config.validationParamValue.max);
-        return msg;
-    },
-    "undefined": (msg, config) => msg.replace(`{${config.validationParamName}}`, config.validationParamValue)
-
-}
-
-const replace = (field, value, msg, config) => 
-    msg.replace(/{field}/g, config[field]).replace(/{value}/g, config[value]);
-
 /** @description Retorna Mensagem de Erro Personalizada
  * @param { {field?: string, value?: any, validationParamName: "dataType" | "list" | "minLength" | "regex" | "maxLength" | "range" | "custom", validationParamValue?: any, message: string} } config
  * @return {string} Mensagem de Erro
  */
-const setErrorMessage = (config) => 
-    ERRORS[config.validationParamName](replace(field, value, config.message, config), config);
+function setErrorMessage(config) {
+
+    let msg = config.message;
+
+    msg = msg.replace(/{field}/g, config.field).replace(/{value}/g, config.value);
+
+    switch (config.validationParamName) {
+        case "list":
+            msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString());
+        break;
+
+        case "range":
+            msg = msg.replace(`{range[min]}`, config.validationParamValue.min).replace(`{range[max]}`, config.validationParamValue.max);
+        break;
+
+        case "len":
+            msg = msg.replace(`{len[min]}`, config.validationParamValue.min).replace(`{len[max]}`, config.validationParamValue.max);
+        break;
+
+        default:
+            msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue);
+        break;
+    }
+
+    return msg;
+
+}
