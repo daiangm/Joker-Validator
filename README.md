@@ -3,11 +3,10 @@ Validador de dados JSON para NodeJS
 
 ## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
-Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***allowedFields***.
-
+### Índice:
 <!--ts-->
-   * [data](#data)
-   * [rules](#rules)
+   1. [data](#data)
+   2. [rules](#rules)
       * [dataType](#dataType)
       * [len](#length)
       * [range](#range)
@@ -16,9 +15,16 @@ Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***all
       * [regex](#regex)
       * [custom](#custom)
       * [message](#message)
-   * [allowedFields](#allowedFields)
-   * [Exemplo](#exemplo)
+   3. [allowedFields](#allowedFields)
 <!--te-->
+
+[Exemplo](#exemplo)
+
+________________
+
+### Parâmetros da Função:
+
+Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***allowedFields***.
 
 ### data 
 <a href="#data"><img id="data" src="https://img.shields.io/static/v1?label=Object&message=Obrigatorio&color=darkred&style=flat&labelColor=informational" /></a> </br>
