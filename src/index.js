@@ -4,13 +4,13 @@
 */
 
 const {valDataType, valLength, valList, valRange, valRegex} = require('./validations');
+const customValidation = require('../custom.validation');
 
 module.exports = validate;
 
 "use strict";
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
- * @example validateData({})
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
  * @param {Object} rules Objeto contendo os parâmetros de validação dos dados enviados no argumento 'data'
  * @param {string} rules.name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
@@ -46,8 +46,6 @@ function validate(data, rules, allowedFields){
     return result;
 
 }
-
-const customValidation = require('../custom.validation');
 
 function validateData(data, rules, allowedFields) {
 
