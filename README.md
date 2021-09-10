@@ -1,5 +1,6 @@
-# JSON-Validator-Brazil
-Validador de dados JSON para NodeJS
+<a href="#"><img src="https://i.imgur.com/lup0OJr.png" style="width: 300px; height: auto" title="JSON Validator" alt="Logo de JSON Validator Brazil"/></a>
+
+### Validador de dados JSON para NodeJS
 
 ## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
