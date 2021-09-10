@@ -9,8 +9,7 @@ const dataExample = {
     phone: "(62)99999-9999",
     cpf: "000.000.000-00",
     birthdate: "12/12/1990",
-    uf: "GO",
-    //id: 666
+    uf: "GO"
 }
 
 const rules = {
