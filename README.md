@@ -44,12 +44,12 @@ Ex: ```library: {dataType: "string"}``` </br>
 </br>
 
 <a href="#length"><img id="length" src="https://img.shields.io/static/v1?label=len&message=Object&color=9cf&style=social" /></a> </br>
-Define a quantidade mínima e máxima de caracteres de uma <i>String</i> ou itens de um <i>Array</i>. Você deve utilizar as propriedades <i><b>min</b></i> e <i><b>max</b></i>. </br>
+Define a quantidade mínima e máxima de caracteres de uma <i>String</i> ou itens de um <i>Array</i>. Você deve utilizar as propriedades <i><b>min</b></i> e/ou <i><b>max</b></i>. </br>
 Ex: ``library: {len: { min: 4, max: 14 }}`` </br>
 </br>
 
 <a href="#range"><img id="range" src="https://img.shields.io/static/v1?label=range&message=Object&color=9cf&style=social" /></a> </br>
-Define um intervalo númerico ou de data (date) aceitável para o valor enviado em <i><b>data</b></i> na chave indicada. Você deve utilizar as propriedades <i><b>min</b></i> e <i><b>max</b></i>. </br>
+Define um intervalo númerico ou de data (_date_) aceitável para o valor enviado em <i><b>data</b></i> na chave indicada. Você deve utilizar as propriedades <i><b>min</b></i> e/ou <i><b>max</b></i>. </br>
 Ex: ``date: {range: { min: "1921-01-01", max: "1999-01-01"}}``</br>
 ###### --> Neste exemplo, queremos determinar que o valor de <i>date</i> em ***data*** só é aceitável em um intervalo entre 18 e 100 anos em relação à 01/01/2021
 
