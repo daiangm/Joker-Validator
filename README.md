@@ -77,7 +77,7 @@ Ex: ``email: {custom: "email"}``</br>
 <a href="#message"><img id="message" src="https://img.shields.io/static/v1?label=message&message=Object&color=9cf&style=social" /></a> </br>
 Personaliza a mensagem de erro no retorno da função conforme a regra definida. </br>
 Na _String_ da mensagem, utilize {value} para imprimir o valor do campo em ***data***, {field} para o nome do campo/chave em ***data*** e {<i>NomeDaRegra</i>} para o valor da regra (Ex: {list}) </br>
-Para valores das regras utilize: {dataType}, {minLength}, {maxLength}, {minRange}, {maxRange}, {list}, {required}, {regex} e {custom}.
+Para valores das regras utilize: {dataType}, {minLength}, {maxLength}, {minRange}, {maxRange}, {list}, {required}, {regex} e {custom}. </br>
 Ex: ``library: {dataType: "number", message: {dataType: "'{value}' do campo '{field}' não corresponde ao tipo de dado '{dataType}'"} }``</br>
 Retorno do exemplo acima: </br>
 ``{validate: false, message: "'json-validator' do campo 'library' não corresponde ao tipo de dado 'number'"}``
