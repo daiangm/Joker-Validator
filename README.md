@@ -26,13 +26,13 @@ Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***all
 [Exemplo](#exemplo)
 
 ### data 
-<a href="#data"><img id="data" src="https://img.shields.io/static/v1?label=Object&message=Obrigatorio&color=darkred&style=flat&labelColor=informational" /></a> </br>
+<a href="#data"><img id="data" src="https://img.shields.io/static/v1?label=Object&message=Obrigat%C3%B3rio&color=darkred&style=flat&labelColor=6513BF" /></a> </br>
 JSON baseado em chaves e valores como ``` { "library": "json-validator" } ```. </br>
 Este pode ser os dados enviados através de uma requisição HTTP (REST). </br>
 Verificar <a href="#exemplo"><i>const dataExample</i></a> no exemplo abaixo.
 
 ### rules
-<a href="#rules"><img id="rules" src="https://img.shields.io/static/v1?label=Object&message=Obrigatorio&color=darkred&style=flat&labelColor=informational" /></a> </br>
+<a href="#rules"><img id="rules" src="https://img.shields.io/static/v1?label=Object&message=Obrigat%C3%B3rio&color=darkred&style=flat&labelColor=6513BF" /></a> </br>
 Objeto Javascript que contêm as regras para validação dos valores enviados em <i>data</i>. </br>
 
 <u>Propriedades aceitáveis</u>:
@@ -87,7 +87,7 @@ Retorno do exemplo acima: </br>
 Verificar <a href="#exemplo"><i>const rules</i></a> no exemplo abaixo.
 
 ### allowedFields
-<a href="#allowedFields"><img id="allowedFields" src="https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=informational" /></a> </br>
+<a href="#allowedFields"><img id="allowedFields" src="https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=6513BF" /></a> </br>
 Array que contêm os nomes dos campos aceitáveis em <i>data</i>. Este parâmetro serve para limitar quais campos serão aceitos e não permite que tenha outros campos em <i>data</i>, ou seja, caso tenha algum campo com nome diferente dos que estão listados em <i>allowedFields</i>, a função retornará ``{validate: false}``</br>
 Verificar <a href="#exemplo"><i>const allowedFields</i></a> no exemplo abaixo.
 
