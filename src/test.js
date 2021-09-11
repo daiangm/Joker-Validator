@@ -4,13 +4,12 @@ const validate = require('./index');
 
 const dataExample = {
     username: "daiangm",
-    email: "daiangm@gmail.com",
-    password: "password",
+    email: "daiangm@github.com",
+    password: "Pa$$w0rd",
     phone: "(62)99999-9999",
     cpf: "000.000.000-00",
     birthdate: "12/12/1990",
     uf: "GO",
-    //id: 666
 }
 
 const rules = {
@@ -27,7 +26,8 @@ const rules = {
     },
     password: {
         dataType: "string",
-        len: { min: 3, max: 16 },
+        custom: "Pa$$w0rd",
+        len: { min: 8, max: 16 },
         required: true,
         message: {required: "É obrigatório o preenchimento do campo '{field}'"}
     },
@@ -45,9 +45,6 @@ const rules = {
     uf: {
         list: ["GO", "MT", "MS"],
         message: { list: "O valor do campo '{field}' precisa ser preenchido com um dos valores da lista: {list}" }
-    },
-    test: {
-        required: true
     }
 }
 

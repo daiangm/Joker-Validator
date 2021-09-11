@@ -7,7 +7,7 @@
         minLength: number,
         maxLength: number,
         range: {min: number, max: number},
-        regex: Regex,
+        regex: RegExp,
         required: boolean,
         message:{custom: string}
     }
@@ -29,6 +29,14 @@ const customValidation = {
     },
     cep: {
         regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i
+    },
+    Pa$$w0rd:{
+        regex: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,}$/i
+        /* Pelo menos uma letra maiúscula, número e caractere especial */
+    },
+    Passw0rd:{
+        regex: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{3,}$/i
+        /* Pelo menos uma letra maiúscula e número */
     }
 };
 
