@@ -1,4 +1,4 @@
-<a href="#"><img src="https://i.imgur.com/Z8kHJWN.png" style="width: 300px; height: auto" title="JSON Validator" alt="Logo de JSON Validator Brazil"/></a>
+<a href="#"><img src="https://i.imgur.com/WzZXRGd.jpeg" style="width: 300px; height: auto" title="JSON Validator" alt="Logo de JSON Validator Brazil"/></a>
 
 ### Validador de dados JSON para NodeJS
 
