@@ -2,6 +2,8 @@
 
 ### Validador de dados JSON para NodeJS
 
+<a href="#" style="color: purple">TESTE</a>
+
 ## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
 ### Parâmetros da Função:
