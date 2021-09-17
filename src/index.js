@@ -3,7 +3,7 @@
  * @tutorial https://github.com/daiangm/JSON-Validator-Brazil 
 */
 
-const {valDataType, valLength, valList, valRange, valRegex} = require('./validations');
+const {valDataType, valLength, valList, valRange, valRegex, valEquals} = require('./validations');
 const customValidation = require('../custom.validation');
 
 module.exports = validate;
@@ -103,12 +103,18 @@ function validateData(data, rules, allowedFields) {
             len: valLength,
             range: valRange,
             regex: valRegex,
+            equals: valEquals
         }
 
         for (r in rulesObj) {
 
             if (rulesFunctions[r.toLowerCase()]){
-                result = rulesFunctions[r.toLowerCase()](rulesObj[r], key, data[key])
+                if(r.toLowerCase() === "equals"){
+                    result = rulesFunctions[r.toLowerCase()](rulesObj[r], data[rulesObj[r]], data[key], key);
+                }
+                else{
+                    result = rulesFunctions[r.toLowerCase()](rulesObj[r], key, data[key]);
+                }
             }
 
             if (!result.validate) {

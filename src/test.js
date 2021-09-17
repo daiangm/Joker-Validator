@@ -6,6 +6,7 @@ const dataExample = {
     username: "daiangm",
     email: "daiangm@github.com",
     password: "Pa$$w0rd",
+    check_pass: "Pa$$w0rd",
     phone: "(62)99999-9999",
     cpf: "000.000.000-00",
     birthdate: "12/12/1990",
@@ -31,6 +32,10 @@ const rules = {
         required: true,
         message: {required: "É obrigatório o preenchimento do campo '{field}'"}
     },
+    check_pass:{
+        equals: "password",
+        required: true
+    },
     phone: {
         custom: "phone",
         required: true
@@ -48,7 +53,7 @@ const rules = {
     }
 }
 
-const allowedFields = ["username", "email", "password", "phone", "cpf", "birthdate", "uf"]
+const allowedFields = ["username", "email", "password", "check_pass", "phone", "cpf", "birthdate", "uf"]
 
 const result = validate(dataExample, rules, allowedFields);
 

@@ -1,4 +1,4 @@
-module.exports = {valDataType, valLength, valList, valRange, valRegex}
+module.exports = {valDataType, valLength, valList, valRange, valRegex, valEquals}
 
 function valDataType(rulesConfig, field, value){
 
@@ -141,6 +141,16 @@ function valRegex(rulesConfig, field, value){
 
     if (!matches) {
         return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}
+    }
+
+    return {validate: true, message: `Ok`}
+
+}
+
+function valEquals(rulesConfig, valueToCheck, value, field){
+
+    if(!valueToCheck || value !== valueToCheck){
+        return {validate: false, message: `O valor do campo '${field}' é diferente do valor de '${rulesConfig}''`}
     }
 
     return {validate: true, message: `Ok`}
