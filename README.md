@@ -94,7 +94,7 @@ Verificar <a href="#exemplo"><i>const rules</i></a> no exemplo abaixo.
 
 ### allowedFields
 <a href="#allowedFields"><img id="allowedFields" src="https://img.shields.io/static/v1?label=Array&message=Opcional&color=424242&style=flat&labelColor=6513BF" /></a> </br>
-Array que contêm os nomes dos campos aceitáveis em <i>data</i>. Este parâmetro serve para limitar quais campos serão aceitos e não permite que tenha outros campos em <i>data</i>, ou seja, caso tenha algum campo com nome diferente dos que estão listados em <i>allowedFields</i>, a função retornará ``{validate: false}``</br>
+Array que contêm os nomes dos campos aceitáveis em ***data***. Este parâmetro serve para limitar quais campos serão aceitos e não permite que tenha outros campos em ***data***, ou seja, caso tenha algum campo com nome diferente dos que estão listados em <i>allowedFields</i>, a função retornará ``{validate: false}``</br>
 Verificar <a href="#exemplo"><i>const allowedFields</i></a> no exemplo abaixo.
 
 ## Exemplo
