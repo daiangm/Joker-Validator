@@ -16,6 +16,7 @@ Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***all
       * [len](#length)
       * [range](#range)
       * [list](#list)
+      * [equals](#equals)
       * [required](#required)
       * [regex](#regex)
       * [custom](#custom)
@@ -58,6 +59,11 @@ Array de _Strings_ e/ou Números aceitáveis para o valor de uma determinada cha
 Ex: ``uf: {list: ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO"]}``</br>
 </br>
 
+<a href="#equals"><img id="equals" src="https://img.shields.io/static/v1?label=equals&message=String&color=9cf&style=social" /></a> </br>
+Exige que o valor de um determinado campo em ***data*** seja igual à outro campo também enviado em ***data***. Normalmente utilizado para confirmar um campo de senha ou e-mail.</br>
+Ex: ``check_pass: {equals: "password"}``</br>
+</br>
+
 <a href="#required"><img id="required" src="https://img.shields.io/static/v1?label=required&message=Boolean&color=9cf&style=social" /></a> </br>
 Determina se o valor do campo em ***data*** é de preenchimento obrigatório.</br>
 Ex: ``library: {required: true}``</br>
@@ -72,7 +78,7 @@ Ex: ``cep: {regex: /^[0-9]{8}|([0-9]{5}|[0-9]{2}.[0-9]{3})-[0-9]{3}$/i}``</br>
 Compara o valor do campo em ***data*** conforme configuração de validação no Objeto ***customValidation*** em <a href="https://github.com/daiangm/json-validator-BR/blob/main/custom.validation.js" target="_blank"><i>custom.validation.js</i></a>. </br>
 Ex: ``email: {custom: "email"}``</br>
 ##### Em ***customValidation***, você pode adicionar um conjunto de regras de validação e atribuir o nome que desejar.
-##### Por padrão, ***customValidation*** possui validação de número de celular (formato brasileiro), e-mail, CEP e URL.
+##### Por padrão, ***customValidation*** possui validação de número de celular (formato brasileiro), e-mail, CEP, URL e formato de senha.
 </br>
 
 <a href="#message"><img id="message" src="https://img.shields.io/static/v1?label=message&message=Object&color=9cf&style=social" /></a> </br>
@@ -98,31 +104,38 @@ const validate = require('lib/validate/src/index'); //--> No seu projeto, você 
 
 
 const dataExample = {
-    "username": "daiangm",
-    "email": "daiangm@gmail.com",
-    "password": "password",
-    "phone": "(62)99999-9999",
-    "cpf": "000.000.000-00",
-    "birthdate": "1990-12-12",
-    "uf": "GO"
+    username: "daiangm",
+    email: "daiangm@github.com",
+    password: "Pa$$w0rd",
+    check_pass: "Pa$$w0rd",
+    phone: "(62)99999-9999",
+    cpf: "000.000.000-00",
+    birthdate: "12/12/1990",
+    uf: "GO",
 }
 
 const rules = {
     username: {
         dataType: "string",
         len: { min: 3, max: 16 },
-        required: true
+        required: true,
+        message: {len: "O valor de {field} deve ter entre {len[min]} e {len[max]} caracteres"}
     },
     email: {
         custom: "email",
         required: true,
-        message: { custom: "'{value}' não é um endereço de e-mail válido" }
+        message: { custom: "'{value}' não é um endereço de {field} válido" }
     },
     password: {
         dataType: "string",
-        len: { min: 3, max: 16 },
+        custom: "Pa$$w0rd",
+        len: { min: 8, max: 16 },
         required: true,
         message: {required: "É obrigatório o preenchimento do campo '{field}'"}
+    },
+    check_pass:{
+        equals: "password",
+        required: true
     },
     phone: {
         custom: "phone",
@@ -141,7 +154,7 @@ const rules = {
     }
 }
 
-const allowedFields = ["username", "email", "password", "phone", "cpf", "birthdate", "uf"]
+const allowedFields = ["username", "email", "password", "check_pass", "phone", "cpf", "birthdate", "uf"]
 
 const result = validate(dataExample, rules, allowedFields);
 
