@@ -1,10 +1,16 @@
 <a href="#"><img src="https://i.imgur.com/CvV9wA4.jpeg" style="width: 100%; height: auto" title="JSON Validator" alt="Logo de JSON Validator Brazil"/></a>
 
-### Validador de dados JSON para NodeJS
+## Validador de dados JSON para NodeJS
 
-## O <b>json-validator</b> analisa os dados enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
+### O <b>joker-validator</b> analisa os dados JSON enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
-### Parâmetros da Função:
+## Instalação
+
+```sh
+npm install joker-validator
+```
+
+## Parâmetros da Função:
 
 Este método funciona através de 3 argumentos: ***data***, ***rules*** e ***allowedFields***.
 
@@ -100,18 +106,17 @@ Verificar <a href="#exemplo"><i>const allowedFields</i></a> no exemplo abaixo.
 ## Exemplo
 
 ```javascript
-const validate = require('lib/validate/src/index'); //--> No seu projeto, você deve clonar o json-validator para a pasta lib/validate
-
+const validate = require('joker-validator');
 
 const dataExample = {
-    username: "daiangm",
-    email: "daiangm@github.com",
-    password: "Pa$$w0rd",
-    check_pass: "Pa$$w0rd",
-    phone: "(62)99999-9999",
-    cpf: "000.000.000-00",
-    birthdate: "12/12/1990",
-    uf: "GO",
+    "username": "daiangm",
+    "email": "daiangm@github.com",
+    "password": "Pa$$w0rd",
+    "check_pass": "Pa$$w0rd",
+    "phone": "(62)99999-9999",
+    "cpf": "000.000.000-00",
+    "birthdate": "12/12/1990",
+    "uf": "GO",
 }
 
 const rules = {
