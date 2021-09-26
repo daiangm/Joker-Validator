@@ -42,7 +42,7 @@ Verificar <a href="#exemplo"><i>const dataExample</i></a> no exemplo abaixo.
 <a href="#rules"><img id="rules" src="https://img.shields.io/static/v1?label=Object&message=Obrigat%C3%B3rio&color=darkred&style=flat&labelColor=6513BF" /></a> </br>
 Objeto Javascript que contêm as regras para validação dos valores enviados em <i>data</i>. </br>
 
-<u>Propriedades aceitáveis</u>:
+**Propriedades aceitáveis**:
 
 <a href="#dataType"><img id="dataType" src="https://img.shields.io/static/v1?label=dataType&message=String&color=9cf&style=social" /></a> </br>
 Esta propriedade serve para comparar se o tipo de dado enviado em <i><b>data</b></i> (conforme a chave indicada) corresponde ao valor setado aqui. </br>
