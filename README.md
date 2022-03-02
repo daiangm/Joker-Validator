@@ -1,6 +1,6 @@
 <a href="#"><img src="https://i.imgur.com/CvV9wA4.jpeg" style="width: 100%; height: auto" title="JSON Validator" alt="Logo de JSON Validator Brazil"/></a>
 
-## Validador de dados JSON para NodeJS
+## Validador de dados JSON para Node.js
 
 ### O <b>joker-validator</b> analisa os dados JSON enviados conforme regras personalizadas indicadas como parâmetros na função, retorna o resultado da validação e, caso os dados estejam inválidos, retorna também uma mensagem de erro padrão ou personalizada.
 
