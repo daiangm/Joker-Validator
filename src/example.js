@@ -1,7 +1,5 @@
 const validate = require('./index');
 
-//const validate = require('lib/validate/src/index');
-
 const dataExample = {
     username: "daiangm",
     email: "daiangm@github.com",

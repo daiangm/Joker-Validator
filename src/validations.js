@@ -70,7 +70,7 @@ function valRange(rulesConfig, field, value){
     let rangeMax;
     let dataToRangeValidate;
 
-    if(typeof rulesConfig !== "object"){
+    if(!rulesConfig || typeof rulesConfig !== "object"){
         console.error(`A propriedade 'range' precisa ser necessariamente um Objeto`)
         return { validate: false }
     }
@@ -135,9 +135,9 @@ function valRange(rulesConfig, field, value){
 
 }
 
-function valRegex(rulesConfig, field, value){
+function valRegex(rulesConfig, field, value, required){
 
-    let matches = value.match(rulesConfig);
+    let matches = !value ? null : value.match(rulesConfig);
 
     if (!matches) {
         return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}

@@ -3,7 +3,7 @@
  * @tutorial https://github.com/daiangm/JSON-Validator-Brazil 
 */
 
-const {valDataType, valLength, valList, valRange, valRegex, valEquals} = require('./validations');
+const { valDataType, valLength, valList, valRange, valRegex, valEquals } = require('./validations');
 const customValidation = require('../custom.validation');
 
 module.exports = validate;
@@ -31,16 +31,16 @@ module.exports = validate;
  * @param {[string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
 */
-function validate(data, rules, allowedFields){
+function validate(data, rules, allowedFields) {
 
     let result;
 
-    try{
+    try {
         result = validateData(data, rules, allowedFields)
     }
-    catch(err){
+    catch (err) {
         console.error(err);
-        return {validate: false, message: "Ocorreu um erro desconhecido na tentativa de validação dos dados."}
+        return { validate: false, message: "Ocorreu um erro desconhecido na tentativa de validação dos dados." }
     }
 
     return result;
@@ -49,7 +49,9 @@ function validate(data, rules, allowedFields){
 
 function validateData(data, rules, allowedFields) {
 
-    if (typeof rules !== "object" || typeof data !== "object") {
+    const condition = !data || !rules || typeof rules !== "object" || typeof data !== "object";
+
+    if (condition) {
         console.error("validateData: Um dos argumentos obrigatórios na função não foi declarado");
         return false;
     }
@@ -62,21 +64,29 @@ function validateData(data, rules, allowedFields) {
     let msg = "Ok";
     let result;
 
+    const rulesFunctions = {
+        list: valList,
+        datatype: valDataType,
+        len: valLength,
+        range: valRange,
+        regex: valRegex,
+        equals: valEquals
+    }
+
     const rulesArray = Object.getOwnPropertyNames(rules);
+
+    const allowedFieldsIsArray = allowedFields && (Array.isArray(allowedFields)) && allowedFields.length > 0;
 
     for (key in data) {
 
-        if ((Array.isArray(allowedFields))) {
-            if (allowedFields.length > 0) {
+        if (allowedFieldsIsArray) {
+            availableFieldIndex = allowedFields.findIndex((fieldName) => {
+                return fieldName === key;
+            });
 
-                availableFieldIndex = allowedFields.findIndex((fieldName) => {
-                    return fieldName === key;
-                });
-
-                if (availableFieldIndex < 0) {
-                    console.error(`validate: '${key}' não é um campo válido para requisição efetuada`);
-                    return { validate: false, message: `'${key}' não é um campo válido para requisição efetuada` };
-                }
+            if (availableFieldIndex < 0) {
+                console.error(`validate: '${key}' não é um campo válido para requisição efetuada`);
+                return { validate: false, message: `'${key}' não é um campo válido para requisição efetuada` };
             }
         }
 
@@ -87,39 +97,24 @@ function validateData(data, rules, allowedFields) {
         }
 
         if (rulesObj.custom) {
-
             if (typeof customValidation[rulesObj.custom] !== "object") {
                 console.error(`Não há validação personalizada com o nome '${rulesObj.custom}'`);
                 return { validate: false };
             }
-            
             rulesObj = Object.assign(customValidation[rulesObj.custom], rulesObj);
-
-        }
-
-        const rulesFunctions = {
-            list: valList,
-            datatype: valDataType,
-            len: valLength,
-            range: valRange,
-            regex: valRegex,
-            equals: valEquals
         }
 
         for (r in rulesObj) {
 
-            if (rulesFunctions[r.toLowerCase()]){
-                if(r.toLowerCase() === "equals"){
-                    result = rulesFunctions[r.toLowerCase()](rulesObj[r], data[rulesObj[r]], data[key], key);
-                }
-                else{
-                    result = rulesFunctions[r.toLowerCase()](rulesObj[r], key, data[key]);
-                }
+            let currentRule = rulesFunctions[r.toLowerCase()];
+
+            if (currentRule) {
+                result = r.toLowerCase() === "equals" ? currentRule(rulesObj[r], data[rulesObj[r]], data[key], key) : currentRule(rulesObj[r], key, data[key]);
             }
 
             if (!result.validate) {
 
-                if (typeof rulesObj.message === "object") {
+                if (rulesObj.message && typeof rulesObj.message === "object") {
                     if (typeof rulesObj.message[r] === "string") {
                         result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] });
                     }
@@ -135,7 +130,7 @@ function validateData(data, rules, allowedFields) {
 
         rulesArray.splice(rulesArray.findIndex((value) => {
             return value === key;
-        }),1);
+        }), 1);
 
     }
 
@@ -175,19 +170,19 @@ function setErrorMessage(config) {
     switch (config.validationParamName) {
         case "list":
             msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue.toString());
-        break;
+            break;
 
         case "range":
             msg = msg.replace(`{range[min]}`, config.validationParamValue.min).replace(`{range[max]}`, config.validationParamValue.max);
-        break;
+            break;
 
         case "len":
             msg = msg.replace(`{len[min]}`, config.validationParamValue.min).replace(`{len[max]}`, config.validationParamValue.max);
-        break;
+            break;
 
         default:
             msg = msg.replace(`{${config.validationParamName}}`, config.validationParamValue);
-        break;
+            break;
     }
 
     return msg;

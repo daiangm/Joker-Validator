@@ -1,0 +1,34 @@
+{
+  "name": "joker-validator",
+  "version": "1.0.3",
+  "description": "Validador de Dados JSON para NodeJS",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daiangm/Joker-Validator.git"
+  },
+  "keywords": [
+    "JSON",
+    "Validator",
+    "json-schema",
+    "validador",
+    "joker",
+    "data",
+    "validation",
+    "data-validation",
+    "nodejs",
+    "javascript",
+    "customized",
+    "custom",
+    "error-message"
+  ],
+  "author": "Daian Gouveia Morato <daiangm@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daiangm/Joker-Validator/issues"
+  },
+  "homepage": "https://github.com/daiangm/Joker-Validator#readme"
+}
