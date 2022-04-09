@@ -137,7 +137,7 @@ function valRange(rulesConfig, field, value){
 
 function valRegex(rulesConfig, field, value, required){
 
-    let matches = !value ? null : value.match(rulesConfig);
+    let matches = typeof value === "string" ? value.match(rulesConfig) : null;
 
     if (!matches) {
         return {validate: false, message: `O valor do campo '${field}' não corresponde ao formato de dado exigido`}

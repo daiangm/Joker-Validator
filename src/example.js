@@ -39,7 +39,8 @@ const rules = {
         required: true
     },
     cpf: {
-        regex: /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/i
+        regex: /^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/i,
+        required: false
     },
     birthdate: {
         dataType: "date",

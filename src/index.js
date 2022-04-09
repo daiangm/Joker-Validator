@@ -1,12 +1,10 @@
 /**
  * @file JSON Validator - Documentation Language: Brazilian Portuguese
- * @tutorial https://github.com/daiangm/JSON-Validator-Brazil 
+ * @tutorial https://github.com/daiangm/Joker-Validator#readme 
 */
 
 const { valDataType, valLength, valList, valRange, valRegex, valEquals } = require('./validations');
 const customValidation = require('../custom.validation');
-
-module.exports = validate;
 
 "use strict";
 
@@ -57,9 +55,7 @@ function validateData(data, rules, allowedFields) {
     }
 
     let availableFieldIndex;
-    let key;
     let rulesObj;
-    let r;
     let validated = true;
     let msg = "Ok";
     let result;
@@ -77,7 +73,7 @@ function validateData(data, rules, allowedFields) {
 
     const allowedFieldsIsArray = allowedFields && (Array.isArray(allowedFields)) && allowedFields.length > 0;
 
-    for (key in data) {
+    for (let key in data) {
 
         if (allowedFieldsIsArray) {
             availableFieldIndex = allowedFields.findIndex((fieldName) => {
@@ -92,9 +88,7 @@ function validateData(data, rules, allowedFields) {
 
         rulesObj = rules[key];
 
-        if (!rulesObj) {
-            continue;
-        }
+        if (!rulesObj) continue;
 
         if (rulesObj.custom) {
             if (typeof customValidation[rulesObj.custom] !== "object") {
@@ -104,7 +98,7 @@ function validateData(data, rules, allowedFields) {
             rulesObj = Object.assign(customValidation[rulesObj.custom], rulesObj);
         }
 
-        for (r in rulesObj) {
+        for (let r in rulesObj) {
 
             let currentRule = rulesFunctions[r.toLowerCase()];
 
@@ -112,14 +106,11 @@ function validateData(data, rules, allowedFields) {
                 result = r.toLowerCase() === "equals" ? currentRule(rulesObj[r], data[rulesObj[r]], data[key], key) : currentRule(rulesObj[r], key, data[key]);
             }
 
-            if (!result.validate) {
+            if (!result.validate && data[key] !== null) {
 
                 if (rulesObj.message && typeof rulesObj.message === "object") {
-                    if (typeof rulesObj.message[r] === "string") {
-                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] });
-                    }
-                    else if (typeof rulesObj.message.custom === "string") {
-                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message.custom });
+                    if (typeof rulesObj.message[r] === "string" || typeof rulesObj.message.custom === "string") {
+                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] || rulesObj.message.custom});
                     }
                 }
 
@@ -128,9 +119,11 @@ function validateData(data, rules, allowedFields) {
 
         };
 
-        rulesArray.splice(rulesArray.findIndex((value) => {
-            return value === key;
-        }), 1);
+        if(data[key] !== null){
+            rulesArray.splice(rulesArray.findIndex((value) => {
+                return value === key;
+            }), 1);
+        }
 
     }
 
@@ -188,3 +181,5 @@ function setErrorMessage(config) {
     return msg;
 
 }
+
+module.exports = validate;
