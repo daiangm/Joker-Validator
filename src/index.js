@@ -1,10 +1,5 @@
-/**
- * @file JSON Validator - Documentation Language: Brazilian Portuguese
- * @tutorial https://github.com/daiangm/Joker-Validator#readme 
-*/
-
-const validations = require('./validations');
-const customValidation = require('../custom.validation');
+const validations = require('./validations/index.validation');
+const customValidation = require('./validations/custom.validation');
 
 "use strict";
 
@@ -17,7 +12,7 @@ const rulesFunctions = {
     equals: validations.valEquals
 }
 
-/** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
+/** Valida se os valores de campos de preenchimento obrigatório foram declarados
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
  * @param {Object} rules Objeto contendo os parâmetros de validação dos dados enviados no argumento 'data'
  * @param {string} rules.name Nome da chave/campo do Objeto JSON em 'data' a ser validada pela função
@@ -36,6 +31,8 @@ const rulesFunctions = {
  * @param {string=} rules.message.regex Propriedade para personalizar a mensagem de erro relacionada à validação através de uma expressão regular.
  * @param {string=} rules.message.required Propriedade para personalizar a mensagem de erro relacionada à validação de campos obrigatórios.
  * @param {[string]=} allowedFields Array de Strings contendo os nomes dos Campos permitidos para a requisição
+ * @file JSON Validator - Documentation Language: Brazilian Portuguese
+ * @tutorial https://github.com/daiangm/Joker-Validator#readme 
  * @return {{validate: true|false, message: string}} validate: True - Campos e Valores Validados / False - Campos e/ou Valores Inválidos
 */
 function validate(data, rules, allowedFields) {
