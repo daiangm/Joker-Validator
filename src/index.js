@@ -3,10 +3,19 @@
  * @tutorial https://github.com/daiangm/Joker-Validator#readme 
 */
 
-const { valDataType, valLength, valList, valRange, valRegex, valEquals } = require('./validations');
+const validations = require('./validations');
 const customValidation = require('../custom.validation');
 
 "use strict";
+
+const rulesFunctions = {
+    list: validations.valList,
+    datatype: validations.valDataType,
+    len: validations.valLength,
+    range: validations.valRange,
+    regex: validations.valRegex,
+    equals: validations.valEquals
+}
 
 /** @description Valida se os valores de campos de preenchimento obrigatório foram declarados
  * @param { {any} } data Objeto que contenha os nomes dos campos como chaves e seus respectivos valores a serem validados. Ex: { "função": "Validação" }
@@ -60,15 +69,6 @@ function validateData(data, rules, allowedFields) {
     let msg = "Ok";
     let result;
 
-    const rulesFunctions = {
-        list: valList,
-        datatype: valDataType,
-        len: valLength,
-        range: valRange,
-        regex: valRegex,
-        equals: valEquals
-    }
-
     const rulesArray = Object.getOwnPropertyNames(rules);
 
     const allowedFieldsIsArray = allowedFields && (Array.isArray(allowedFields)) && allowedFields.length > 0;
@@ -98,19 +98,19 @@ function validateData(data, rules, allowedFields) {
             rulesObj = Object.assign(customValidation[rulesObj.custom], rulesObj);
         }
 
-        for (let r in rulesObj) {
+        for (let rulesProperty in rulesObj) {
 
-            let currentRule = rulesFunctions[r.toLowerCase()];
+            let currentRule = rulesFunctions[rulesProperty.toLowerCase()];
 
             if (currentRule) {
-                result = r.toLowerCase() === "equals" ? currentRule(rulesObj[r], data[rulesObj[r]], data[key], key) : currentRule(rulesObj[r], key, data[key]);
+                result = rulesProperty.toLowerCase() === "equals" ? currentRule(rulesObj[rulesProperty], data[rulesObj[rulesProperty]], data[key], key) : currentRule(rulesObj[rulesProperty], key, data[key]);
             }
 
             if (!result.validate && data[key] !== null) {
 
                 if (rulesObj.message && typeof rulesObj.message === "object") {
-                    if (typeof rulesObj.message[r] === "string" || typeof rulesObj.message.custom === "string") {
-                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[r], message: rulesObj.message[r] || rulesObj.message.custom});
+                    if (typeof rulesObj.message[rulesProperty] === "string" || typeof rulesObj.message.custom === "string") {
+                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[rulesProperty], message: rulesObj.message[rulesProperty] || rulesObj.message.custom});
                     }
                 }
 
@@ -127,26 +127,14 @@ function validateData(data, rules, allowedFields) {
 
     }
 
-    if (rulesArray.length > 0) {
-        rulesArray.forEach((item) => {
-            if (rules[item].required) {
-                msg = `É obrigatório atribuir valor ao campo '${item}'`;
+    const requiredFieldsVerificationResult = validations.verifyRequiredFields(rulesArray, rules)
 
-                if (typeof rules[item].message === "object") {
-                    if (typeof rules[item].message.required === "string") {
-                        msg = setErrorMessage({ field: item, message: rules[item].message.required });
-                    }
-                    else if (typeof rules[item].message.custom === "string") {
-                        msg = setErrorMessage({ field: item, message: rules[item].message.custom });
-                    }
-                }
+    if(!requiredFieldsVerificationResult.validate) return requiredFieldsVerificationResult;
 
-                return validated = false;
-            }
-        });
-    }
-
-    return { validate: validated, message: msg };
+    return {
+        validate: validated,
+        message: msg
+    };
 
 }
 
