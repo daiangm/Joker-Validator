@@ -107,7 +107,7 @@ function validateData(data, rules, allowedFields) {
 
                 if (rulesObj.message && typeof rulesObj.message === "object") {
                     if (typeof rulesObj.message[rulesProperty] === "string" || typeof rulesObj.message.custom === "string") {
-                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: r, validationParamValue: rulesObj[rulesProperty], message: rulesObj.message[rulesProperty] || rulesObj.message.custom});
+                        result.message = setErrorMessage({ field: key, value: data[key], validationParamName: rulesProperty, validationParamValue: rulesObj[rulesProperty], message: rulesObj.message[rulesProperty] || rulesObj.message.custom});
                     }
                 }
 
